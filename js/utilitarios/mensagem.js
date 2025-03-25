@@ -1,6 +1,4 @@
 const Mensagem = (() => {
-    const container = $("#containerMensagens");
-
     const tiposDeMensagem = {
         "sucesso": "bi-check-square-fill sucesso",
         "info": "bi-info-circle-fill info",
@@ -15,6 +13,7 @@ const Mensagem = (() => {
             throw new Error(`Tipo de mensagem "${tipo}" não suportado.`);
         }
 
+        const container = $("#containerMensagens");
         const elementoToast = $(`<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false"></div>`);
             const cabecalho = $(`<div class="toast-header"></div>`);
                 const icone = $(`<i class="bi ${tiposDeMensagem[tipo]} me-2 fs-5"></i>`);
