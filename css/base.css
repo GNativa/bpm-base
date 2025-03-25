@@ -7,6 +7,10 @@
     --cor-escura: #101010;
 }
 
+:disabled {
+    user-select: all;
+}
+
 :root, [data-bs-theme=light] {
     --cor-base: #3f4150;
     --cor-base-clara: color-mix(in oklab, var(--cor-base) 40%, #ffffff 60%);
