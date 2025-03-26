@@ -5,14 +5,11 @@
     --cor-sim-nao: #6600ff;
     --cor-erro: var(--bs-form-invalid-color);
     --cor-escura: #101010;
-}
-
-:disabled {
-    user-select: all;
+    --cor-base: #3f4150;
+    // --cor-base: #b1b5dc;
 }
 
 :root, [data-bs-theme=light] {
-    --cor-base: #3f4150;
     --cor-base-clara: color-mix(in oklab, var(--cor-base) 40%, #ffffff 60%);
     --cor-texto-claro: color-mix(in oklab, var(--cor-base-clara), #505050);
 
@@ -32,7 +29,6 @@
 }
 
 [data-bs-theme=dark] {
-    --cor-base: #b1b5dc;
     --cor-base-clara: color-mix(in oklab, var(--cor-base) 40%, #000000 60%);
     --cor-texto-claro: color-mix(in oklab, var(--cor-base-clara), #676767);
 
@@ -49,6 +45,10 @@
     --cor-obrigatorio: var(--cor-base);
     --cor-titulo: var(--cor-base);
     --cor-texto-desabilitado: color-mix(in oklab, var(--cor-base-clara) 70%, #deeeff 30%);
+}
+
+:disabled {
+    user-select: all;
 }
 
 .form-floating > :disabled ~ label,
@@ -90,6 +90,10 @@
     color: #6d757d;
 }
  */
+
+input[type="file"]::file-selector-button {
+    color: var(--cor-base);
+}
 
 .form-check label {
     color: var(--cor-texto-desabilitado);
@@ -218,7 +222,7 @@ textarea {
     --bs-btn-bg: color-mix(in oklab, var(--cor-base) 80%, var(--cor-base-clara) 20%);
     --bs-btn-border-color: color-mix(in oklab, var(--cor-base) 80%, var(--cor-base-clara) 20%);
     --bs-btn-hover-color: #ffffff;
-    --bs-btn-hover-bg: var(--cor-base);
+    --bs-btn-hover-bg: color-mix(in oklab, var(--cor-base) 90%, var(--cor-base-clara) 10%);
     --bs-btn-hover-border-color: var(--cor-base);
     --bs-btn-focus-shadow-rgb: 49, 132, 253;
     --bs-btn-active-color: #ffffff;
@@ -317,7 +321,7 @@ textarea {
     cor anterior: 98a3ba
      */
 
-    background: linear-gradient(90deg, #ffffff 0% 40%, var(--cor-obrigatorio) 50%, #ffffff 60% 100%);
+    background: linear-gradient(90deg, var(--bs-body-bg) 0% 40%, var(--cor-obrigatorio) 50%, var(--bs-body-bg) 60% 100%);
     background-size: 150% 150%;
     animation-name: carregando;
     animation-duration: 0.8s;
@@ -325,4 +329,43 @@ textarea {
     animation-delay: 0s;
     animation-iteration-count: infinite;
     animation-direction: normal;
+}
+
+#telaDeBusca {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+
+    .fundo {
+        background-color: var(--cor-base);
+        width: 65vw;
+        height: 80vh;
+        padding: 1em;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+
+        .barra {
+            display: flex;
+            justify-content: end;
+        }
+
+        .conteudo {
+            overflow-y: auto;
+        }
+
+        .conteudo table {
+            table-layout: fixed;
+            word-break: break-word;
+        }
+
+        .conteudo table thead tr th {
+            width: 200px;
+        }
+    }
 }

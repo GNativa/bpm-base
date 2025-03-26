@@ -8,6 +8,7 @@ const Controlador = (() => {
     let validador = new Validador();
     let etapa = null;
     let inicializado = false;
+    let accessToken = null;
 
     // Interface da API do workflow (BPM) que lida com a inicialização, salvamento de dados e erros do formulário.
     // Função "_rollback" não implementada até o momento
@@ -48,6 +49,7 @@ const Controlador = (() => {
                 return info["getPlatformData"]();
             })
             .then(function (dados) {
+                accessToken = ["token"]["access_token"];
                 return carregarFontes(dados);
             })
             .then(function () {
@@ -139,7 +141,7 @@ const Controlador = (() => {
             console.log(dados);
 
             for (const campo of fonte.camposCorrespondentes) {
-                Formulario.campos[campo].adicionarOpcoes(fonte.gerarOpcoes());
+                Formulario.campos[campo].adicionarOpcoes(fonte.obterOpcoes());
             }
         }
     }
@@ -219,43 +221,6 @@ const Controlador = (() => {
         do formulário.
      */
     function configurarElementosFixos() {
-        $("body").append(`
-            <nav class="navbar">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col"></div>
-                    </div>
-                </div>
-            </nav>
-    
-            <!-- Container do formulário preenchido pelo controlador -->
-            <form>
-                <div id="containerFormulario" class="componente container-fluid"></div>
-                <!-- Container para toasts (mensagens que podem ser dispensadas) -->
-                <div id="containerMensagens" class="componente toast-container position-fixed top-0 end-0 p-3"></div>
-                <!-- Botão para envios de teste -->
-                <div class="container-fluid">
-                    <div class="row mt-3">
-                        <div class="col d-flex justify-content-end">
-                            <button id="enviar" type="button" class="btn botao">Enviar</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-    
-            <footer class="mt-3">
-                <nav class="navbar">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col text-end">
-                                <em class="text-end">Os campos destacados são obrigatórios.</em>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </footer>
-        `);
-
         const personalizacao = Formulario.personalizacao;
         $("#tituloFormulario").val(personalizacao.titulo);
         $("#enviar").on("click", function () {
@@ -273,6 +238,6 @@ const Controlador = (() => {
     }
 
     return {
-        inicializar
+        accessToken, inicializar
     };
 })();

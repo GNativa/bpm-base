@@ -43,7 +43,7 @@ const tipoParaElemento = {
     - Representação abstrata de um campo no formulário.
  */
 class Campo {
-    constructor(id, rotulo, tipo, largura, dica, altura, listaFiltro, propriedadesAdicionais) {
+    constructor(id, rotulo, tipo, largura, dica, altura, listaFiltro, propriedadesAdicionais, fonteDeDados, campoFonte) {
         if (document.getElementById(id) !== null) {
             throw Error(`Já existe um campo com o id "${id}".`);
         }
@@ -62,6 +62,8 @@ class Campo {
         // caso seja uma lista
         this.listaFiltro = listaFiltro ?? null;
         this.propriedadesAdicionais = propriedadesAdicionais ?? {};
+        this.fonteDeDados = fonteDeDados ?? null;
+        this.campoFonte = campoFonte ?? null;
 
         this.obrigatorio = false;
         this.visivel = true;
@@ -113,6 +115,7 @@ class Campo {
         const altura = this.altura;
         const coluna = this.coluna;
         const propriedadesAdicionais = this.propriedadesAdicionais;
+        const fonteDeDados = this.fonteDeDados;
 
         const classeColuna = largura >= 1 && largura <= 12 ? `col-${largura}` : "col";
         coluna.classList.add(classeColuna);
@@ -149,24 +152,50 @@ class Campo {
 
         if ((elemento === "input" || elemento === "textarea") && tipoCampo !== "file") {
             filhoColuna = document.createElement("div");
-            let classeFilho;
+            let classeFilha;
+            let divExterna = null;
 
             label.append(rotulo);
             label.htmlFor = id;
 
             if (tipo !== "checkbox") {
                 classes.push("form-control");
-                classeFilho = "form-floating";
+                classeFilha = "form-floating";
 
+                if (fonteDeDados !== null && tipo === "texto") {
+                    divExterna = document.createElement("div");
+                    divExterna.classList.add("input-group");
+                }
             }
             else {
                 classes.push("form-check-input");
-                classeFilho = "form-check";
+                classeFilha = "form-check";
                 label.classList.add("mt-1", "ms-2");
             }
 
-            filhoColuna.classList.add(classeFilho);
-            coluna.appendChild(filhoColuna);
+            filhoColuna.classList.add(classeFilha);
+
+            if (divExterna !== null) {
+                divExterna.appendChild(filhoColuna);
+                const botao = document.createElement("button");
+                botao.id = `botao-${id}`;
+                botao.type = "button";
+                botao.title = "Buscar";
+                botao.classList.add("btn", "botao");
+                this.configurarBusca(botao);
+
+                const buscar = document.createElement("i");
+                buscar.classList.add("bi", "bi-search", "fs-5");
+                botao.appendChild(buscar);
+
+                divExterna.appendChild(botao);
+
+                coluna.appendChild(divExterna);
+            }
+            else {
+                coluna.appendChild(filhoColuna);
+            }
+
             filhoColuna.appendChild(campo);
             filhoColuna.appendChild(label);
 
@@ -231,6 +260,15 @@ class Campo {
         });
 
         return elementoJquery;
+    }
+
+    configurarBusca(botao) {
+        const campo = this;
+
+        $(botao).on("click", function () {
+            Busca.abrir(campo);
+            campo.iniciarCarregamento();
+        });
     }
 
     // configurarMascara(mascara: string, opcoes: {}): void
@@ -411,6 +449,7 @@ class Campo {
         }
 
         this.campo.removeClass("carregando");
+        this.campo.addClass("carregado");
         carregaveisVisiveis.addClass("carregado");
     }
 

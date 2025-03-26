@@ -3,7 +3,7 @@ class Fonte {
         this.nome = nome;
         this.campoChave = campoChave;
         this.campoValor = campoValor;
-        this.dados = {};
+        this.dados = [];
         this.camposCorrespondentes = camposCorrespondentes ?? [];
     }
 
@@ -11,7 +11,31 @@ class Fonte {
         this.dados = dados;
     }
 
-    gerarOpcoes() {
+    obterRegistros() {
+        const registros = [];
+        const quantidade = this.dados.length;
+
+        if (quantidade === 0) {
+            return [];
+        }
+
+        const primeiro = this.dados[0];
+        let propriedades = [];
+
+        for (const propriedade in primeiro) {
+            propriedades.push(propriedade);
+        }
+
+        for (const obj of this.dados) {
+            const registro = new OpcaoLista(obj[chave], `${obj[chave]} - ${obj[valor]}`);
+            registros.push(registro);
+        }
+
+        console.log(registros);
+        return this.dados;
+    }
+
+    obterOpcoes() {
         const opcoes = [];
         const chave = this.campoChave;
         const valor = this.campoValor;
@@ -21,7 +45,6 @@ class Fonte {
             opcoes.push(opcao);
         }
 
-        console.log(opcoes);
         return opcoes;
     }
 }

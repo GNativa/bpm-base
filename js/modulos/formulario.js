@@ -37,8 +37,8 @@ const Formulario = (() => {
     };
 
     const fontes = {
-        "fonte1": new Fonte("Fonte1", []),
-        "fonte2": new Fonte("Fonte2", []),
+        "fonte1": new Fonte("Fonte1", "codigo", "descricao", ["campo"]),
+        "fonte2": new Fonte("Fonte2", "codigo", "descricao", ["campo"]),
     };
 
     // obterValidacoes(): array<Validacao>
@@ -150,7 +150,8 @@ const Formulario = (() => {
                 "campo1", "Campo 1", "checkbox", 2, "Esta é uma caixa de seleção.",
             ),
             new Campo(
-                "campo2", "Campo 2", "texto", 4,
+                "campo2", "Campo 2", "texto", 4, null, null, null,
+                null, fontes["fonte1"],
             ),
             new Campo(
                 "campo3", "Campo 3", "email", 4,
