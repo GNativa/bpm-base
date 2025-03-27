@@ -10,40 +10,40 @@ class Secao {
         this.possuiTitulo = titulo !== undefined && titulo !== null;
         this.gerada = false;
         this.elemento = $();
-        this.divSecao = document.createElement("div");
+        this.divSecao = $("<div></div>");
         this.campos = campos ?? [];
         this.gerar();
     }
 
     configurarTitulo(elementoSecao) {
-        const linhaTitulo = document.createElement("div");
-        linhaTitulo.classList.add("row", "linha-titulo");
+        const linhaTitulo = $("<div></div>");
+        linhaTitulo.addClass("row linha-titulo");
 
-        const colunaTitulo = document.createElement("div");
-        colunaTitulo.classList.add("col", "coluna-titulo");
+        const colunaTitulo = $("<div></div>");
+        colunaTitulo.addClass("col coluna-titulo");
 
-        const tituloSecao = document.createElement("div");
-        tituloSecao.classList.add("titulo-g");
-        tituloSecao.textContent = this.titulo;
+        const tituloSecao = $("<div></div>");
+        tituloSecao.addClass("titulo-g");
+        tituloSecao.text(this.titulo);
 
-        const hr = document.createElement("hr");
-        hr.classList.add("hr-titulo");
+        const hr = $("<hr>");
+        hr.addClass("hr-titulo");
         linhaTitulo.append(colunaTitulo);
         colunaTitulo.append(tituloSecao);
-        elementoSecao.appendChild(linhaTitulo);
-        elementoSecao.appendChild(hr);
+        elementoSecao.append(linhaTitulo);
+        elementoSecao.append(hr);
     }
 
     adicionarLinha() {
-        const linhaCampos = document.createElement("div");
-        linhaCampos.classList.add("row", "g-3");
+        const linhaCampos = $("<div></div>");
+        linhaCampos.addClass("row g-3");
 
         for (const campo of this.campos) {
-            if (document.getElementById(campo.obterElementoHtml().id) !== null) {
+            if (document.getElementById(campo.id) !== null) {
                 throw Error(`Já existe um campo com o id "${id}".`);
             }
 
-            linhaCampos.appendChild(campo.coluna);
+            linhaCampos.append(campo.coluna);
             this.divSecao.append(linhaCampos);
         }
     }
@@ -60,15 +60,15 @@ class Secao {
         const id = this.id;
         const possuiTitulo = this.possuiTitulo;
 
-        secao.id = id;
-        secao.classList.add("mb-4");
+        secao.attr("id", id);
+        secao.addClass("mb-4");
 
         if (possuiTitulo) {
             this.configurarTitulo(secao);
         }
 
-        const linhaCampos = document.createElement("div");
-        linhaCampos.classList.add("row", "g-3");
+        const linhaCampos = $("<div></div>");
+        linhaCampos.addClass("row g-3");
 
         this.adicionarLinha();
         const elemento = $(secao);

@@ -10,11 +10,13 @@
 }
 
 :root, [data-bs-theme=light] {
-    --cor-base-clara: color-mix(in oklab, var(--cor-base) 40%, #ffffff 60%);
-    --cor-texto-claro: color-mix(in oklab, var(--cor-base-clara), #505050);
+    --cor-base-dev: #003B6CFF;
+    --cor-base-contraste: color-mix(in oklab, var(--cor-base) 40%, #ffffff 60%);
+    --cor-texto-pouco-contraste: color-mix(in oklab, var(--cor-base-contraste), #505050);
+    --cor-texto-contraste: color-mix(in oklab, var(--cor-base-contraste), #ffffff);
 
     --cor-texto: var(--cor-base);
-    --cor-borda-foco: color-mix(in oklab, var(--cor-base), var(--cor-base-clara));
+    --cor-borda-foco: color-mix(in oklab, var(--cor-base), var(--cor-base-contraste));
 
     /*
     --cor-borda-foco: rgba(102, 108, 131, 0.75);
@@ -25,15 +27,17 @@
 
     --cor-obrigatorio: var(--cor-base);
     --cor-titulo: var(--cor-base);
-    --cor-texto-desabilitado: color-mix(in oklab, var(--cor-base-clara) 70%, #4a4f55 30%);
+    --cor-texto-desabilitado: color-mix(in oklab, var(--cor-base-contraste) 70%, #4a4f55 30%);
 }
 
 [data-bs-theme=dark] {
-    --cor-base-clara: color-mix(in oklab, var(--cor-base) 40%, #000000 60%);
-    --cor-texto-claro: color-mix(in oklab, var(--cor-base-clara), #676767);
+    --cor-base-dev: #369aec;
+    --cor-base-contraste: color-mix(in oklab, var(--cor-base) 40%, #424242 60%);
+    --cor-texto-pouco-contraste: color-mix(in oklab, var(--cor-base-contraste), #676767);
+    --cor-texto-contraste: color-mix(in oklab, var(--cor-base-contraste), #393939);
 
     --cor-texto: var(--cor-base);
-    --cor-borda-foco: color-mix(in oklab, var(--cor-base), var(--cor-base-clara));
+    --cor-borda-foco: color-mix(in oklab, var(--cor-base), var(--cor-base-contraste));
 
     /*
     --cor-borda-foco: rgba(102, 108, 131, 0.75);
@@ -44,7 +48,7 @@
 
     --cor-obrigatorio: var(--cor-base);
     --cor-titulo: var(--cor-base);
-    --cor-texto-desabilitado: color-mix(in oklab, var(--cor-base-clara) 70%, #deeeff 30%);
+    --cor-texto-desabilitado: color-mix(in oklab, var(--cor-base-contraste) 70%, #deeeff 30%);
 }
 
 :disabled {
@@ -98,6 +102,16 @@ input[type="file"]::file-selector-button {
 .form-check label {
     color: var(--cor-texto-desabilitado);
 }
+
+/*
+
+div:has(> input[disabled]) + button {
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: var(--bs-btn-disabled-bg);
+}
+
+ */
 
 select[disabled] {
     color: var(--cor-texto-desabilitado);
@@ -209,6 +223,13 @@ select[required], input[type="file"][required] {
     color: var(--cor-titulo);
 }
 
+.titulo-tela {
+    font-size: 1.25em;
+    font-weight: bold;
+    // color: var(--cor-texto-contraste);
+    color: var(--bs-body-color);
+}
+
 .texto-mensagem {
     font-size: 1.15em;
 }
@@ -219,10 +240,10 @@ textarea {
 
 .botao {
     --bs-btn-color: #ffffff;
-    --bs-btn-bg: color-mix(in oklab, var(--cor-base) 80%, var(--cor-base-clara) 20%);
-    --bs-btn-border-color: color-mix(in oklab, var(--cor-base) 80%, var(--cor-base-clara) 20%);
+    --bs-btn-bg: color-mix(in oklab, var(--cor-base) 80%, var(--cor-base-contraste) 20%);
+    --bs-btn-border-color: color-mix(in oklab, var(--cor-base) 80%, var(--cor-base-contraste) 20%);
     --bs-btn-hover-color: #ffffff;
-    --bs-btn-hover-bg: color-mix(in oklab, var(--cor-base) 90%, var(--cor-base-clara) 10%);
+    --bs-btn-hover-bg: color-mix(in oklab, var(--cor-base) 90%, var(--cor-base-contraste) 10%);
     --bs-btn-hover-border-color: var(--cor-base);
     --bs-btn-focus-shadow-rgb: 49, 132, 253;
     --bs-btn-active-color: #ffffff;
@@ -233,6 +254,7 @@ textarea {
     --bs-btn-disabled-color: #ffffff;
     --bs-btn-disabled-bg: var(--cor-base);
     --bs-btn-disabled-border-color: var(--cor-base);
+    // background: linear-gradient(180deg, var(--cor-base) 0%, var(--cor-borda-foco) 100%);
 }
 
 .carregavel {}
@@ -332,7 +354,7 @@ textarea {
 }
 
 #telaDeBusca {
-    position: absolute;
+    position: fixed;
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -353,6 +375,7 @@ textarea {
         .barra {
             display: flex;
             justify-content: end;
+            padding-bottom: 1em;
         }
 
         .conteudo {

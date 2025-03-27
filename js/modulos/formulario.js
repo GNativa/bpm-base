@@ -37,8 +37,8 @@ const Formulario = (() => {
     };
 
     const fontes = {
-        "fonte1": new Fonte("Fonte1", "codigo", "descricao", ["campo"]),
-        "fonte2": new Fonte("Fonte2", "codigo", "descricao", ["campo"]),
+        "fonte1": new Fonte("Fonte 1", "codigo", "descricao", ["campo"]),
+        "fonte2": new Fonte("Fonte 2", "codigo", "descricao", ["campo"]),
     };
 
     // obterValidacoes(): array<Validacao>
@@ -146,24 +146,24 @@ const Formulario = (() => {
      */
     function gerar() {
         const camposSecaoA = [
-            new Campo(
-                "campo1", "Campo 1", "checkbox", 2, "Esta é uma caixa de seleção.",
+            new CampoCheckbox(
+                "campo1", "Campo 1", 2, "Esta é uma caixa de seleção.",
             ),
-            new Campo(
-                "campo2", "Campo 2", "texto", 4, null, null, null,
-                null, fontes["fonte1"],
+            new CampoTexto(
+                "campo2", "Campo 2", 4, null, fontes["fonte1"],
             ),
-            new Campo(
-                "campo3", "Campo 3", "email", 4,
+            new CampoTexto(
+                "campo3", "Campo 3", 4, null, null,null, null, true,
             ),
-            new Campo(
-                "campo4", "Campo 4", "area-texto", 2, "As dicas não são obrigatórias.", 5
+            new CampoTexto(
+                "campo4", "Campo 4", 2, "As dicas não são obrigatórias.",
+                null, null, 5
             ),
-            new Campo(
-                "campo5", "Campo 5", "anexo", 6, null, null, null, {multiple: true},
+            new CampoAnexo(
+                "campo5", "Campo 5", 6, "Dica", true,
             ),
-            new Campo(
-                "campo6", "Campo 6", "lista", 4, "É necessário adicionar opções nesse campo.",
+            new CampoLista(
+                "campo6", "Campo 6", 4, "É necessário adicionar opções nesse campo.",
             )
                 .adicionarOpcoes([
                     new OpcaoLista("1", "1 - Opção 1"),
@@ -171,8 +171,8 @@ const Formulario = (() => {
                     new OpcaoLista("3", "3 - Opção 3"),
                 ]
             ),
-            new Campo(
-                "campo7", "Campo 7", "data", 2, `Este é um campo do tipo "data".`,
+            new CampoData(
+                "campo7", "Campo 7", 2, `Este é um campo do tipo "data".`,
             ),
         ];
 

@@ -1,15 +1,28 @@
 class Busca {
-    static linhaSelecionada = -1;
-    static preparada = false;
+    constructor(campo) {
+        this.linhaSelecionada = -1;
+        this.preparada = false;
+        this.campo = campo;
+    }
 
-    static async abrir(campo) {
+    async abrir() {
         const tela = $("#telaDeBusca");
-        const fonte = campo.fonteDeDados;
+        const campo = this.campo;
+        const fonte = campo.fonte;
+
         tela.removeClass("d-none");
+        tela.find("div.titulo-tela").text(campo?.fonte?.nome ?? "Pesquisa");
 
         if (!this.preparada) {
-            tela.find("#fecharBusca").on("click", function () {
-                Busca.fechar(campo);
+            const busca = this;
+            // Fechar a tela ao clicar no X ou fora dela
+            tela.find("#fecharBusca").add("#telaDeBusca").on("click", function () {
+                busca.fechar(campo);
+            });
+
+            // Impedir a tela em si de se fechar com um clique
+            tela.find("div.fundo").on("click", function (event) {
+                event.stopPropagation();
             });
 
             this.preparada = true;
@@ -23,15 +36,16 @@ class Busca {
             dados = fonte.dados;
         }
         else {
-            dados = [{"A": 1, "B": 2, "C": 3}];
+            dados = [{"A": 1, "B": 2, "C": 3}, {"A": 1, "B": 2, "C": 3}, {"A": 1, "B": 2, "C": 3}];
+            //dados = [];
         }
+
+        const cabecalho = tela.find("thead > tr").empty();
+        const corpo = tela.find("tbody").empty();
 
         if (dados.length > 0) {
             const primeiroRegistro = dados[0];
             let propriedades = [];
-
-            const cabecalho = tela.find("thead > tr").empty();
-            const corpo = tela.find("tbody").empty();
 
             for (const propriedade in primeiroRegistro) {
                 propriedades.push(propriedade);
@@ -50,10 +64,18 @@ class Busca {
                 corpo.append(linha);
             }
         }
+        else {
+            cabecalho.append(`<th scope="col" style="text-align: center">Vazio</th>`);
+            corpo.append(`<tr><td style="text-align: center">Nenhum registro encontrado.</td></tr>`);
+        }
     }
 
-    static fechar(campo) {
+    fecharTela() {
         $("#telaDeBusca").addClass("d-none");
-        campo.finalizarCarregamento();
+    }
+
+    fechar() {
+        this.fecharTela();
+        this.campo.finalizarCarregamento();
     }
 }
