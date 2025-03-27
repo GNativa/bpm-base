@@ -37,8 +37,8 @@ const Formulario = (() => {
     };
 
     const fontes = {
-        "fonte1": new Fonte("Fonte 1", "codigo", "descricao", ["campo"]),
-        "fonte2": new Fonte("Fonte 2", "codigo", "descricao", ["campo"]),
+        "fonte1": new Fonte("fonte1", "Fonte 1", "codigo", "descricao", ["campo"]),
+        "fonte2": new Fonte("fonte1", "Fonte 2", "codigo", "descricao", ["campo"]),
     };
 
     // obterValidacoes(): array<Validacao>
@@ -150,14 +150,14 @@ const Formulario = (() => {
                 "campo1", "Campo 1", 2, "Esta é uma caixa de seleção.",
             ),
             new CampoTexto(
-                "campo2", "Campo 2", 4, null, fontes["fonte1"],
+                "campo2", "Campo 2", 4, null, fontes["fonte1"], "A", false,
             ),
             new CampoTexto(
-                "campo3", "Campo 3", 4, null, null,null, null, true,
+                "campo3", "Campo 3", 4, null, fontes["fonte1"], "B", true,
             ),
             new CampoTexto(
                 "campo4", "Campo 4", 2, "As dicas não são obrigatórias.",
-                null, null, 5
+                fontes["fonte1"], "C", true, 5
             ),
             new CampoAnexo(
                 "campo5", "Campo 5", 6, "Dica", true,
@@ -178,6 +178,9 @@ const Formulario = (() => {
 
         salvarCampos(camposSecaoA);
         secaoA = new Secao("secaoA", "Seção A", camposSecaoA);
+
+        campos["campo3"].definirCampoMestre(campos["campo2"]);
+        campos["campo4"].definirCampoMestre(campos["campo2"]);
     }
 
     // salvarDados(listaDeCampos: array<Campo>): void

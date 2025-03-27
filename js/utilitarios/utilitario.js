@@ -1,7 +1,7 @@
 const Utilitario = (() => {
-    const salvarArquivosEmString = (campoInput) => {
+    const salvarArquivosEmString = (campo) => {
         return new Promise((resolve, reject) => {
-            const arquivos = campoInput.files;
+            const arquivos = campo.campo.prop("files");
             const dadosArquivos = [];
 
             if (arquivos.length === 0) {

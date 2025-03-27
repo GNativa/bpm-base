@@ -121,6 +121,7 @@ const Controlador = (() => {
         Formulario.configurarEventos();
         Formulario.definirEstadoInicial();
 
+        configurarAnimacoes();
         configurarEtapas();
         aplicarValidacoes(Formulario.obterValidacoes());
         inicializado = true;
@@ -140,18 +141,40 @@ const Controlador = (() => {
             fonte.definirDados(dados);
             console.log(dados);
 
+            /* Trocar isso para variar conforme o tipo do campo ou algo assim
             for (const campo of fonte.camposCorrespondentes) {
                 Formulario.campos[campo].adicionarOpcoes(fonte.obterOpcoes());
+            }
+             */
+        }
+    }
+
+    function atualizarCamposFonte(idFonte, registro) {
+        if (idFonte == null) {
+            const msg = "O ID da fonte para atualização dos campos fonte não pode ser nulo.";
+            Mensagem.exibir("Configurações inválidas", msg, "erro");
+            throw Error(msg);
+        }
+
+        const campos = Formulario.campos;
+
+        for (const id in campos) {
+            const campo = campos[id];
+
+            if (campo?.fonte?.id === idFonte) {
+                campo.val(registro[campo.campoFonte]);
             }
         }
     }
 
-    // configurarEstilos(): void
-    /*
-        Configura os estilos customizáveis do formulário, como cores e temas.
-     */
-    function configurarEstilos() {
+    function configurarAnimacoes() {
+        /*
+        for (const campo of Formulario.campos) {
+            if (campo.campoMestre) {
 
+            }
+        }
+         */
     }
 
     // validarFormulario(): void
@@ -238,6 +261,6 @@ const Controlador = (() => {
     }
 
     return {
-        accessToken, inicializar
+        accessToken, atualizarCamposFonte, inicializar
     };
 })();

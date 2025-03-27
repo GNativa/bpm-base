@@ -1,7 +1,8 @@
 class CampoTexto extends CampoEntrada {
-    constructor(id, rotulo, largura, dica, fonte, campoFonte, altura, email) {
+    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, altura, email) {
         super(id, rotulo, largura, dica, fonte, campoFonte);
         this.tag = altura ? "textarea" : "input";
+        this.campoResultante = campoResultante ?? true;
 
         if (altura) {
             this.altura = `${altura}lh`;
@@ -18,17 +19,23 @@ class CampoTexto extends CampoEntrada {
             }
         }
 
+        this.mascaraPadrao = "";
+        this.opcoesMascara = {clearIfNotMatch: true};
+
         this.inicializar();
     }
 
     configurarDetalhes() {
         if (this.fonte !== null) {
+            this.classeCarregaveis = `.${Constantes.campos.classes.carregaveis}${this.fonte.id}`;
+            this.campo.addClass(`${Constantes.campos.classes.carregaveis}${this.fonte.id}`);
+        }
+
+        if (!this.campoResultante && (this.fonte !== null && this.campoFonte !== null)) {
             let divExterna = $(`<div class="input-group"></div>`);
             this.filhoColuna.wrap(divExterna);
-            this.classeCarregaveis = `.carregaveis-${this.id}`;
-            this.campo.addClass(`carregaveis-${this.id}`);
 
-            const botao = $(`<button id="${Constantes.prefixoIdBotaoPesquisa}${this.id}" type="button" title="Buscar" class="btn botao"></button>`);
+            const botao = $(`<button id="${Constantes.campos.prefixoIdBotaoPesquisa}${this.id}" type="button" title="Buscar" class="btn botao"></button>`);
             this.configurarBusca(botao);
             const buscar = $(`<i class="bi bi-search fs-4"></i>`);
             botao.append(buscar);
@@ -40,12 +47,23 @@ class CampoTexto extends CampoEntrada {
         }
     }
 
+    // configurarMascara(mascara: string, opcoes: {}): void
+    /*
+        Configura a máscara do campo e suas opções.
+     */
+    configurarMascara(mascara, opcoes) {
+        this.opcoesMascara = opcoes ?? this.opcoesMascara;
+        this.campo.mask(mascara, opcoes ?? this.opcoesMascara);
+        return this;
+    }
+
     configurarBusca(botao) {
         const campo = this;
 
         botao.on("click", async function () {
             campo.iniciarCarregamento();
-            await Busca.abrir(campo);
+            const busca = TelaFactory.obterTela("busca", {campo: campo});
+            await busca.abrir();
         });
     }
 }

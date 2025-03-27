@@ -1,5 +1,6 @@
 class Fonte {
-    constructor(nome, campoChave, campoValor, camposCorrespondentes) {
+    constructor(id, nome, campoChave, campoValor, camposCorrespondentes) {
+        this.id = id;
         this.nome = nome;
         this.campoChave = campoChave;
         this.campoValor = campoValor;
@@ -27,6 +28,9 @@ class Fonte {
         }
 
         for (const obj of this.dados) {
+            for (const propriedade of propriedades) {
+                registros.push(obj[propriedade]);
+            }
             const registro = new OpcaoLista(obj[chave], `${obj[chave]} - ${obj[valor]}`);
             registros.push(registro);
         }

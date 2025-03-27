@@ -1,19 +1,16 @@
-// Campo(id: string, rotulo: string, largura: integer, dica: string, fonte: Fonte, campoFonte: string)
+// Campo({id: string, rotulo: string, largura: integer, dica: string, fonte: Fonte, campoFonte: string})
 /*
     - Representação abstrata de um campo no formulário.
  */
 class Campo {
     constructor(id, rotulo, largura, dica, fonte, campoFonte) {
-        if (document.getElementById(id) !== null) {
-            throw Error(`Já existe um campo com o id "${id}".`);
-        }
-
         this.id = id;
         this.rotulo = rotulo;
         this.largura = largura;
         this.dica = dica ?? null;
         this.fonte = fonte ?? null;
         this.campoFonte = campoFonte ?? null;
+        this.campoMestre = null;
 
         this.tag = null;
         this.tipo = null;
@@ -83,6 +80,11 @@ class Campo {
             this.campo.attr("type", `${tipo}`);
         }
 
+        if (fonte !== null) {
+            this.campo.attr(Constantes.campos.atributos.fonte, `${fonte.nome}`);
+            this.campo.attr(Constantes.campos.atributos.campoFonte, `${this.campoFonte}`);
+        }
+
         this.configurarCampo();
 
         this.feedback = $("<div></div>");
@@ -127,6 +129,12 @@ class Campo {
     removerEvento(evento) {
         this.campo.off(evento);
         return this;
+    }
+
+    definirCampoMestre(campo) {
+        this.campoMestre = campo;
+        this.classeCarregaveis = campo.classeCarregaveis;
+        this.campo.addClass(campo.classeCarregaveis);
     }
 
     definirConsistenciaAtiva(validacao) {
@@ -219,7 +227,7 @@ class Campo {
         this.campo.prop("disabled", !this.editavel);
 
         if (this.fonte !== null) {
-            $(`#${Constantes.prefixoIdBotaoPesquisa}${this.id}`).prop("disabled", !this.editavel);
+            $(`#${Constantes.campos.prefixoIdBotaoPesquisa}${this.id}`).prop("disabled", !this.editavel);
         }
 
         return this;
