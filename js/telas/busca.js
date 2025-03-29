@@ -2,29 +2,32 @@ class TelaDeBusca extends Tela {
     constructor(parametros) {
         super("busca", parametros);
         this.dados = [];
+        this.pesquisar = null;
+        this.linhaSelecionada = -1;
         this.preparada = false;
+        this.pesquisavel = false;
     }
 
     async abrir() {
+        const busca = this;
         const tela = $(`#${this.id}`);
         const campo = this.parametros.campo;
+        this.pesquisar = tela.find("#buscaPesquisar");
+        this.pesquisar.on("change", () => {
+            console.log("AAAAAA");
+            if (this.pesquisavel) {
+                busca.gerarLinhas();
+            }
+        });
+        this.pesquisavel = false;
+
         const fonte = campo.fonte;
 
         tela.removeClass("d-none");
         tela.find("div.titulo-tela").text(campo?.fonte?.nome ?? "Pesquisa");
 
         if (!this.preparada) {
-            const busca = this;
-            /*
             // Fechar a tela ao clicar no X ou fora dela
-            tela.find("#fecharBusca").on("click", function () {
-                busca.fechar();
-            });
-
-             */
-
-
-
             tela.find("#fecharBusca").add("#telaDeBusca").on("click", function () {
                 busca.fechar();
             });
@@ -32,8 +35,6 @@ class TelaDeBusca extends Tela {
             tela.find("div.fundo").on("click", function (event) {
                 event.stopPropagation();
             });
-
-
 
             this.preparada = true;
         }
@@ -56,6 +57,8 @@ class TelaDeBusca extends Tela {
     }
 
     gerarLinhas() {
+        this.pesquisavel = false;
+
         const tela = $(`#${this.id}`);
         const dados = this.dados;
         const cabecalho = tela.find("thead > tr").empty();
@@ -70,29 +73,59 @@ class TelaDeBusca extends Tela {
                 cabecalho.append($(`<th scope="col">${propriedade}</th>`));
             }
 
-            for (let i = 0; i < dados.length; i++) {
-                const linha = $(`<tr ${Constantes.telas.atributos.sequenciaLinha}="${i}"></tr>`);
-                const telaDeBusca = this;
+            let dadosFiltrados = [...this.dados];
 
-                linha.on("click", function (event) {
-                    const linhaSelecionada = linha.attr(Constantes.telas.atributos.sequenciaLinha);
-                    Controlador.atualizarCamposFonte(telaDeBusca.parametros.campo.fonte.id, dados[linhaSelecionada]);
-                    telaDeBusca.fechar();
-                });
+            if (dadosFiltrados.length === 1) {
+                this.pesquisar.prop("disabled", true);
+            }
+            else {
+                this.pesquisar.prop("disabled", false);
+
+                if (this.pesquisar.val() !== "") {
+                    dadosFiltrados = this.filtrarDados(propriedades);
+                }
+            }
+
+            for (let i = 0; i < dadosFiltrados.length; i++) {
+                const linha = $(`<tr ${Constantes.telas.atributos.sequenciaLinha}="${i}"></tr>`);
+                const busca = this;
 
                 for (const propriedade of propriedades) {
                     const coluna = $(`<td></td>`);
-                    coluna.text(dados[i][propriedade]);
+                    coluna.text(dadosFiltrados[i][propriedade]);
                     linha.append(coluna);
                 }
 
                 corpo.append(linha);
+
+                linha.on("click", () => {
+                    busca.linhaSelecionada = linha.attr(Constantes.telas.atributos.sequenciaLinha);
+                    Controlador.atualizarCamposFonte(busca.parametros.campo.fonte.id, dadosFiltrados[busca.linhaSelecionada]);
+                    busca.fechar();
+                });
             }
         }
         else {
             cabecalho.append(`<th scope="col" style="text-align: center">Vazio</th>`);
             corpo.append(`<tr><td style="text-align: center">Nenhum registro encontrado.</td></tr>`);
         }
+
+        this.pesquisavel = true;
+    }
+
+    filtrarDados(propriedades) {
+        return this.dados.filter((registro) => {
+            for (const propriedade of propriedades) {
+                const valorCelula = registro[propriedade].toString().toUpperCase();
+                const valorBusca = this.pesquisar.val().toString().toUpperCase();
+
+                if (valorCelula.includes(valorBusca)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
     }
 
     fecharTela() {
@@ -101,6 +134,7 @@ class TelaDeBusca extends Tela {
 
     fechar() {
         this.fecharTela();
-        this.parametros.campo.finalizarCarregamento();
+        this.parametros.campo.finalizarCarregamento(this.linhaSelecionada === -1);
+        this.linhaSelecionada = -1;
     }
 }
