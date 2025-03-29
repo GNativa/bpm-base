@@ -266,7 +266,7 @@ class Campo {
         this.campo.addClass("carregando");
     }
 
-    finalizarCarregamento() {
+    finalizarCarregamento(interromperAnimacao) {
         const carregaveis = $(this.classeCarregaveis);
         const carregaveisVisiveis = carregaveis.filter(function () {
             return this.style.display !== "none"
@@ -275,14 +275,20 @@ class Campo {
         for (let i = 0; i < carregaveisVisiveis.length; i++) {
             const tempo = ((i + 1) * 0.15);
             carregaveisVisiveis[i].style.animationDelay = `${tempo}s`;
+
+            /*
             setTimeout(function () {
                 carregaveisVisiveis[i].classList.remove("carregado");
             }, tempo * 10000);
+             */
         }
 
         this.campo.removeClass("carregando");
         this.campo.addClass("carregado");
-        carregaveisVisiveis.addClass("carregado");
+
+        if (!interromperAnimacao) {
+            carregaveisVisiveis.addClass("carregado");
+        }
     }
 
     falharCarregamento() {

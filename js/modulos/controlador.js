@@ -162,7 +162,7 @@ const Controlador = (() => {
             const campo = campos[id];
 
             if (campo?.fonte?.id === idFonte) {
-                campo.val(registro[campo.campoFonte]);
+                campo.val(registro[campo.campoFonte]).blur();
             }
         }
     }

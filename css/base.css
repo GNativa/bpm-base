@@ -279,7 +279,7 @@ textarea {
     background: transparent;
 }
 
-.form-floating > input + label:after {
+.form-floating > input + label:after, .form-floating > textarea + label:after {
     background: transparent !important;
 }
 
@@ -353,7 +353,7 @@ textarea {
     animation-direction: normal;
 }
 
-#telaDeBusca {
+.tela {
     position: fixed;
     width: 100vw;
     height: 100vh;

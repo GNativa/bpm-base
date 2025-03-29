@@ -26,9 +26,22 @@ class CampoTexto extends CampoEntrada {
     }
 
     configurarDetalhes() {
+        const campo = this.campo;
+        const campoTexto = this;
+
         if (this.fonte !== null) {
             this.classeCarregaveis = `.${Constantes.campos.classes.carregaveis}${this.fonte.id}`;
-            this.campo.addClass(`${Constantes.campos.classes.carregaveis}${this.fonte.id}`);
+            campo.addClass(`${Constantes.campos.classes.carregaveis}${this.fonte.id}`);
+
+            // Função para limpar outros campos relacionados quando este tiver seus valores limpos,
+            const callback = (event) => {
+                if (event.target.value === "") {
+                    const carregaveis = $(campoTexto.classeCarregaveis);
+                    carregaveis.val("").trigger("input").trigger("change");
+                }
+            }
+
+            campo.on("blur", callback);
         }
 
         if (!this.campoResultante && (this.fonte !== null && this.campoFonte !== null)) {
@@ -43,7 +56,7 @@ class CampoTexto extends CampoEntrada {
         }
 
         if (this.altura !== null) {
-            this.campo.css("height", this.altura);
+            campo.css("height", this.altura);
         }
     }
 
