@@ -1,7 +1,6 @@
 class CampoCheckbox extends CampoEntrada {
     constructor(id, rotulo, largura, dica, fonte, campoFonte) {
-        super(id, rotulo, largura, dica, fonte, campoFonte);
-        this.tipo = "checkbox";
+        super(id, rotulo, largura, dica, "checkbox", fonte, campoFonte);
         this.inicializar();
     }
 }

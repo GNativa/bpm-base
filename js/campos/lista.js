@@ -1,7 +1,6 @@
 class CampoLista extends Campo {
     constructor(id, rotulo, largura, dica, fonte, campoFonte) {
-        super(id, rotulo, largura, dica, fonte, campoFonte);
-        this.tag = "select";
+        super(id, rotulo, largura, dica, "select", null, fonte, campoFonte);
         this.inicializar();
     }
 

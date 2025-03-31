@@ -3,7 +3,7 @@
     - Representação abstrata de um campo no formulário.
  */
 class Campo {
-    constructor(id, rotulo, largura, dica, fonte, campoFonte) {
+    constructor(id, rotulo, largura, dica, tag, tipo, fonte, campoFonte) {
         this.id = id;
         this.rotulo = rotulo;
         this.largura = largura;
@@ -12,8 +12,8 @@ class Campo {
         this.campoFonte = campoFonte ?? null;
         this.campoMestre = null;
 
-        this.tag = null;
-        this.tipo = null;
+        this.tag = tag;
+        this.tipo = tipo;
         this.classes = ["campo"];
 
         this.obrigatorio = false;
@@ -310,5 +310,10 @@ class Campo {
 
     cleanVal() {
         return this.campo.cleanVal();
+    }
+
+    on(evento, funcao) {
+        this.campo.on(evento, funcao);
+        return this;
     }
 }

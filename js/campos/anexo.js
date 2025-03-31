@@ -1,8 +1,6 @@
 class CampoAnexo extends Campo {
     constructor(id, rotulo, largura, dica, multiplosAnexos, quantidadeAnexos) {
-        super(id, rotulo, largura, dica);
-        this.tag = "input";
-        this.tipo = "file";
+        super(id, rotulo, largura, dica, "input", "file");
         this.multiplosAnexos = multiplosAnexos ?? false;
         // TODO: implementar validação de quantidade de anexos
         this.quantidadeAnexos = quantidadeAnexos ?? 1;

@@ -57,6 +57,7 @@ class TelaDeBusca extends Tela {
     }
 
     gerarLinhas() {
+        this.iniciarPesquisa();
         this.pesquisavel = false;
 
         const tela = $(`#${this.id}`);
@@ -111,6 +112,7 @@ class TelaDeBusca extends Tela {
         }
 
         this.pesquisavel = true;
+        this.finalizarPesquisa();
     }
 
     filtrarDados(propriedades) {
@@ -134,7 +136,18 @@ class TelaDeBusca extends Tela {
 
     fechar() {
         this.fecharTela();
+        this.pesquisar.val("");
         this.parametros.campo.finalizarCarregamento(this.linhaSelecionada === -1);
         this.linhaSelecionada = -1;
+    }
+
+    iniciarPesquisa() {
+        this.pesquisar.removeClass("carregado");
+        this.pesquisar.addClass("carregando");
+    }
+
+    finalizarPesquisa() {
+        this.pesquisar.removeClass("carregando");
+        this.pesquisar.addClass("carregado");
     }
 }
