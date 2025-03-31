@@ -152,14 +152,16 @@ const Formulario = (() => {
                 "campo1", "Campo 1", 2, "Esta é uma caixa de seleção.",
             ),
             new CampoTexto(
-                "campo2", "Campo 2", 4, null, fontes["fonte1"], "A", false,
+                "campo2", "Campo 2", 4, null, fontes["fonte1"], "A",
+                false, false,
             ),
             new CampoTexto(
-                "campo3", "Campo 3", 4, null, fontes["fonte1"], "B", true,
+                "campo3", "Campo 3", 4, null, fontes["fonte1"], "B",
+                true, false,
             ),
             new CampoTexto(
                 "campo4", "Campo 4", 2, "As dicas não são obrigatórias.",
-                fontes["fonte1"], "C", true, 5
+                fontes["fonte1"], "C", true, false,5
             ),
             new CampoAnexo(
                 "campo5", "Campo 5", 6, "Dica", true,

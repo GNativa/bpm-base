@@ -6,7 +6,7 @@ class Constantes {
         }),
         atributos: Object.freeze({
             fonte: "data-fonte",
-            campoFonte: "data-nome-fonte",
+            campoFonte: "data-campo-fonte",
         }),
     });
 
@@ -18,6 +18,32 @@ class Constantes {
     });
 
     static fontes = Object.freeze({
+        dadosTeste: [
+            {"A": 1, "B": 2, "C": 3},
+            {"A": 4, "B": 5, "C": 6},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+            {"A": 7, "B": 8, "C": 9},
+        ],
         tipos: Object.freeze({
             api: "api",
             tabela: "tabela",

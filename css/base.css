@@ -375,24 +375,38 @@ table > tbody > tr:last-child {
     }
 }
 
+table.conteudo > tbody {
+    overflow-y: auto;
+}
+
 .tela {
     position: fixed;
     width: 100vw;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.25);
-    z-index: 1000;
+    z-index: 10;
 
     .fundo {
         background-color: var(--cor-base);
         width: 65vw;
         height: 80vh;
-        padding: 1em;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
+        padding-left: 1em;
+        padding-right: 1em;
+        padding-bottom: 1em;
+        overflow-y: auto;
+
+        .superior {
+            top: 0;
+            position: sticky;
+            z-index: 5;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            background-color: var(--cor-base);
+        }
 
         .barra {
             display: flex;
@@ -402,11 +416,14 @@ table > tbody > tr:last-child {
 
         .conteudo {
             overflow-y: auto;
+            z-index: 0;
+            margin-bottom: -1em;
         }
 
         .conteudo table {
             table-layout: fixed;
             word-break: break-word;
+            overflow-y: auto;
         }
 
         .conteudo table thead tr th {

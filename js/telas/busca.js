@@ -13,11 +13,15 @@ class TelaDeBusca extends Tela {
         const tela = $(`#${this.id}`);
         const campo = this.parametros.campo;
         busca.campoPesquisar = tela.find("#buscaPesquisar");
-        busca.campoPesquisar.on("change", () => {
-            if (busca.pesquisavel) {
-                busca.campoPesquisar();
+
+        busca.campoPesquisar.on("keydown", (event) => {
+            if (busca.campoPesquisar.val() === "") {
+                busca.pesquisar();
+            } else if (busca.pesquisavel && event.key === "Enter") {
+                busca.pesquisar();
             }
         });
+
         busca.pesquisavel = false;
 
         const fonte = campo.fonte;
@@ -50,7 +54,7 @@ class TelaDeBusca extends Tela {
             this.dados = fonte.dados;
         }
         else {
-            this.dados = [{"A": 1, "B": 2, "C": 3}, {"A": 4, "B": 5, "C": 6}, {"A": 7, "B": 8, "C": 9}];
+            this.dados = Constantes.fontes.dadosTeste;
             //dados = [];
         }
     }
@@ -85,7 +89,7 @@ class TelaDeBusca extends Tela {
                 this.campoPesquisar.prop("disabled", false);
 
                 if (this.campoPesquisar.val() !== "") {
-                    dadosFiltrados = Utilitario.filtrarDados(dadosFiltrados, this.campoPesquisar.val(), propriedades);
+                    dadosFiltrados = Utilitario.filtrarDados(dadosFiltrados, this.campoPesquisar.val(), primeiroRegistro);
                 }
             }
 

@@ -1,12 +1,12 @@
 class Fonte {
-    constructor(id, nome, campoChave, campoValor, tipo, filtro) {
+    constructor(id, nome, campoChave, campoValor, tipo, filtros) {
         this.id = id;
         this.nome = nome;
         this.campoChave = campoChave;
         this.campoValor = campoValor;
         this.dados = [];
         this.tipo = tipo;
-        this.filtro = filtro;
+        this.filtros = filtros ?? [];
     }
 
     definirDados(dados) {

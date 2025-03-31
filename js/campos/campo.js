@@ -27,7 +27,6 @@ class Campo {
 
         this.consistenciaAtiva = null;
         this.feedback = null;
-        this.classeCarregaveis = null;
 
         this.coluna = $("<div></div>");
         this.campo = null;
@@ -81,7 +80,7 @@ class Campo {
         }
 
         if (fonte !== null) {
-            this.campo.attr(Constantes.campos.atributos.fonte, `${fonte.nome}`);
+            this.campo.attr(Constantes.campos.atributos.fonte, `${fonte.id}`);
             this.campo.attr(Constantes.campos.atributos.campoFonte, `${this.campoFonte}`);
         }
 
@@ -133,8 +132,6 @@ class Campo {
 
     definirCampoMestre(campo) {
         this.campoMestre = campo;
-        this.classeCarregaveis = campo.classeCarregaveis;
-        this.campo.addClass(campo.classeCarregaveis);
     }
 
     definirConsistenciaAtiva(validacao) {
@@ -247,38 +244,27 @@ class Campo {
         }
     }
 
-    configurarConsulta(carregaveis, classe, consulta) {
-        this.classeCarregaveis = "." + classe;
-        this.campo.addClass(classe);
-
-        for (const carregavel of carregaveis) {
-            carregavel.campo.addClass(classe);
-        }
-
-        this.adicionarEvento("blur.consulta", consulta);
-    }
-
     iniciarCarregamento() {
-        const carregaveis = $(this.classeCarregaveis);
-        carregaveis.removeClass("carregado");
+        const camposFonte = $(`[${Constantes.campos.atributos.fonte}=${this.fonte.id}]`);
+        camposFonte.removeClass("carregado");
         this.campo.removeClass("carregado-falha");
-        carregaveis.css("animation-delay", "0s");
+        camposFonte.css("animation-delay", "0s");
         this.campo.addClass("carregando");
     }
 
     finalizarCarregamento(interromperAnimacao) {
-        const carregaveis = $(this.classeCarregaveis);
-        const carregaveisVisiveis = carregaveis.filter(function () {
+        const camposFonte = $(`[${Constantes.campos.atributos.fonte}=${this.fonte.id}]`);
+        const camposFonteVisiveis = camposFonte.filter(function () {
             return this.style.display !== "none"
         });
 
-        for (let i = 0; i < carregaveisVisiveis.length; i++) {
+        for (let i = 0; i < camposFonteVisiveis.length; i++) {
             const tempo = ((i + 1) * 0.15);
-            carregaveisVisiveis[i].style.animationDelay = `${tempo}s`;
+            camposFonteVisiveis[i].style.animationDelay = `${tempo}s`;
 
             /*
             setTimeout(function () {
-                carregaveisVisiveis[i].classList.remove("carregado");
+                camposFonteVisiveis[i].classList.remove("carregado");
             }, tempo * 10000);
              */
         }
@@ -287,7 +273,7 @@ class Campo {
         this.campo.addClass("carregado");
 
         if (!interromperAnimacao) {
-            carregaveisVisiveis.addClass("carregado");
+            camposFonteVisiveis.addClass("carregado");
         }
     }
 

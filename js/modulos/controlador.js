@@ -95,7 +95,6 @@ const Controlador = (() => {
         validarFormulario();
 
         let dados = await Formulario.salvarDados();
-
         console.log(dados);
 
         return {
@@ -160,14 +159,19 @@ const Controlador = (() => {
             throw Error(msg);
         }
 
-        const campos = Formulario.campos;
+        const campos = $(`[${Constantes.campos.atributos.fonte}=${idFonte}]`);
 
-        for (const id in campos) {
-            const campo = campos[id];
-
-            if (campo?.fonte?.id === idFonte) {
-                campo.val(registro[campo.campoFonte]).blur();
-            }
+        if (registro) {
+            campos.each(function() {
+                const campo = $(this);
+                campo.val(registro[campo.attr(Constantes.campos.atributos.campoFonte)])
+                    .trigger("input")
+                    .trigger("change")
+                    .trigger("blur.obrigatorio");
+            });
+        }
+        else {
+            campos.val("");
         }
     }
 

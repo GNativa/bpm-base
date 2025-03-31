@@ -1,9 +1,12 @@
 class CampoTexto extends CampoEntrada {
-    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, altura, email, tratamentoConsulta) {
+    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, limitarValores, altura, email, tratamentoConsulta) {
         super(id, rotulo, largura, dica, null, fonte, campoFonte);
         this.tag = altura ? "textarea" : "input";
         this.campoResultante = campoResultante ?? true;
+        this.limitarValores = limitarValores ?? true;
         this.tratamentoConsulta = tratamentoConsulta ?? function() {};
+        this.valorAnterior = "";
+        this.dropdown = null;
 
         if (altura) {
             this.altura = `${altura}lh`;
@@ -28,40 +31,68 @@ class CampoTexto extends CampoEntrada {
 
     configurarDetalhes() {
         const campo = this.campo;
-        const campoTexto = this;
 
         if (this.fonte !== null) {
-            this.classeCarregaveis = `.${Constantes.campos.classes.carregaveis}${this.fonte.id}`;
-            campo.addClass(`${Constantes.campos.classes.carregaveis}${this.fonte.id}`);
+            this.campo.attr(Constantes.campos.atributos.fonte, this.fonte.id);
+        }
+
+        if (!this.campoResultante && (this.fonte !== null && this.campoFonte !== null)) {
+            // Configurar dropdown de opções filtradas
+            this.dropdown = $(`<ul class="list-group"></ul>`);
+            this.dropdown.append($(`<li class="list-group-item">Item</li>`));
+            this.dropdown.append($(`<li class="list-group-item">Item 2</li>`));
+            this.campo.after(this.dropdown);
 
             // Função para limpar outros campos relacionados quando este tiver seus valores limpos,
             const callback = async (event) => {
                 if (event.target.value === "") {
-                    const carregaveis = $(campoTexto.classeCarregaveis);
-                    carregaveis.val("").trigger("input").trigger("change");
+                    const camposFonte = $(`[${Constantes.campos.atributos.fonte}=${this.fonte.id}]`);
+                    camposFonte.val("").trigger("input").trigger("change");
+                    return;
                 }
-                else {
-                    this.iniciarCarregamento();
 
-                    try {
-                        this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.accessToken));
-                        // obter valor correspondente ao que foi digitado no campo ou exibir dropdown
-                        // definir valores resultantes nos outros campos
+                if (event.target.value === this.valorAnterior) {
+                    return;
+                }
+
+                this.iniciarCarregamento();
+
+                try {
+                    // this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.accessToken, this.fonte.filtros));
+                    this.fonte.definirDados(Constantes.fontes.dadosTeste);
+                    const dados = this.fonte.dados;
+
+                    if (dados.length === 0) {
                         this.finalizarCarregamento();
+                        return;
                     }
-                    catch (e) {
-                        Mensagem.exibir("Erro ao carregar dados",
-                            `Houve um erro ao carregar os dados da fonte "${this.fonte.id}": ${e}`,
-                            "erro");
-                        this.falharCarregamento();
+
+                    const dadosFiltrados = Utilitario.filtrarDados(dados, this.val(), dados[0], this.campoFonte);
+
+                    // TODO: exibir dropdown em vez de imediatamente atribuir valores aos campos
+
+                    if (dadosFiltrados.length > 0) {
+                        Controlador.atualizarCamposFonte(this.fonte.id, dadosFiltrados[0]);
                     }
+                    else if (this.limitarValores) {
+                        Controlador.atualizarCamposFonte(this.fonte.id);
+                    }
+
+                    this.valorAnterior = event.target.value;
+
+                    this.finalizarCarregamento();
+                }
+                catch (e) {
+                    Mensagem.exibir("Erro ao carregar dados",
+                        `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" (ID "${this.fonte.id}")`
+                        + `para o campo "${this.rotulo}" (ID "${this.id}"): ${e}`,
+                        "erro");
+                    this.falharCarregamento();
                 }
             }
 
             campo.on("blur", callback);
-        }
 
-        if (!this.campoResultante && (this.fonte !== null && this.campoFonte !== null)) {
             let divExterna = $(`<div class="input-group"></div>`);
             this.filhoColuna.wrap(divExterna);
 
