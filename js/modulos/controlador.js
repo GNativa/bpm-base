@@ -49,12 +49,15 @@ const Controlador = (() => {
                 return info["getPlatformData"]();
             })
             .then(function (dados) {
-                accessToken = ["token"]["access_token"];
-                return carregarFontes(dados);
+                accessToken = dados["token"]["access_token"];
+                return info["getInfoFromProcessVariables"]();
+                //return carregarFontes(dados);
             })
+            /*
             .then(function () {
                 return info["getInfoFromProcessVariables"]();
             })
+             */
             .then(function (data) {
                 console.log(data);
 
@@ -130,6 +133,7 @@ const Controlador = (() => {
     // carregarFontes(dadosPlataforma: {}): void
     /*
         Carrega as fontes de dados definidas na classe Formulario usando o token de acesso do Senior X.
+        TODO: carregar sob demanda
      */
     async function carregarFontes(dadosPlataforma) {
         const token = dadosPlataforma["token"]["access_token"];

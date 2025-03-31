@@ -1,8 +1,9 @@
 class CampoTexto extends CampoEntrada {
-    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, altura, email) {
+    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, altura, email, tratamentoConsulta) {
         super(id, rotulo, largura, dica, null, fonte, campoFonte);
         this.tag = altura ? "textarea" : "input";
         this.campoResultante = campoResultante ?? true;
+        this.tratamentoConsulta = tratamentoConsulta ?? function() {};
 
         if (altura) {
             this.altura = `${altura}lh`;
@@ -34,10 +35,26 @@ class CampoTexto extends CampoEntrada {
             campo.addClass(`${Constantes.campos.classes.carregaveis}${this.fonte.id}`);
 
             // Função para limpar outros campos relacionados quando este tiver seus valores limpos,
-            const callback = (event) => {
+            const callback = async (event) => {
                 if (event.target.value === "") {
                     const carregaveis = $(campoTexto.classeCarregaveis);
                     carregaveis.val("").trigger("input").trigger("change");
+                }
+                else {
+                    this.iniciarCarregamento();
+
+                    try {
+                        this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.accessToken));
+                        // obter valor correspondente ao que foi digitado no campo ou exibir dropdown
+                        // definir valores resultantes nos outros campos
+                        this.finalizarCarregamento();
+                    }
+                    catch (e) {
+                        Mensagem.exibir("Erro ao carregar dados",
+                            `Houve um erro ao carregar os dados da fonte "${this.fonte.id}": ${e}`,
+                            "erro");
+                        this.falharCarregamento();
+                    }
                 }
             }
 

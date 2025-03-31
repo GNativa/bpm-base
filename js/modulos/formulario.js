@@ -37,8 +37,10 @@ const Formulario = (() => {
     };
 
     const fontes = {
-        "fonte1": new Fonte("fonte1", "Fonte 1", "codigo", "descricao", ["campo"]),
-        "fonte2": new Fonte("fonte1", "Fonte 2", "codigo", "descricao", ["campo"]),
+        "fonte1": new Fonte("fonte1", "Fonte 1", "codigo", "descricao",
+            Constantes.fontes.tipos.tabela),
+        "fonte2": new Fonte("fonte1", "Fonte 2", "codigo", "descricao",
+            Constantes.fontes.tipos.tabela),
     };
 
     // obterValidacoes(): array<Validacao>

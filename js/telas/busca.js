@@ -2,7 +2,7 @@ class TelaDeBusca extends Tela {
     constructor(parametros) {
         super("busca", parametros);
         this.dados = [];
-        this.pesquisar = null;
+        this.campoPesquisar = null;
         this.linhaSelecionada = -1;
         this.preparada = false;
         this.pesquisavel = false;
@@ -12,21 +12,20 @@ class TelaDeBusca extends Tela {
         const busca = this;
         const tela = $(`#${this.id}`);
         const campo = this.parametros.campo;
-        this.pesquisar = tela.find("#buscaPesquisar");
-        this.pesquisar.on("change", () => {
-            console.log("AAAAAA");
-            if (this.pesquisavel) {
-                busca.gerarLinhas();
+        busca.campoPesquisar = tela.find("#buscaPesquisar");
+        busca.campoPesquisar.on("change", () => {
+            if (busca.pesquisavel) {
+                busca.campoPesquisar();
             }
         });
-        this.pesquisavel = false;
+        busca.pesquisavel = false;
 
         const fonte = campo.fonte;
 
         tela.removeClass("d-none");
         tela.find("div.titulo-tela").text(campo?.fonte?.nome ?? "Pesquisa");
 
-        if (!this.preparada) {
+        if (!busca.preparada) {
             // Fechar a tela ao clicar no X ou fora dela
             tela.find("#fecharBusca").add("#telaDeBusca").on("click", function () {
                 busca.fechar();
@@ -36,18 +35,18 @@ class TelaDeBusca extends Tela {
                 event.stopPropagation();
             });
 
-            this.preparada = true;
+            busca.preparada = true;
         }
 
-        await this.obterDados(fonte);
-        this.gerarLinhas();
+        await busca.obterDados(fonte);
+        busca.pesquisar();
     }
 
     async obterDados(fonte) {
         const token = Controlador.accessToken;
 
         if (token !== null) {
-            await Consultor.carregarFonte(fonte, token);
+            fonte.definirDados(await Consultor.carregarFonte(fonte, token));
             this.dados = fonte.dados;
         }
         else {
@@ -56,10 +55,13 @@ class TelaDeBusca extends Tela {
         }
     }
 
-    gerarLinhas() {
+    pesquisar() {
         this.iniciarPesquisa();
-        this.pesquisavel = false;
+        this.gerarLinhas();
+        this.finalizarPesquisa();
+    }
 
+    gerarLinhas() {
         const tela = $(`#${this.id}`);
         const dados = this.dados;
         const cabecalho = tela.find("thead > tr").empty();
@@ -77,13 +79,13 @@ class TelaDeBusca extends Tela {
             let dadosFiltrados = [...this.dados];
 
             if (dadosFiltrados.length === 1) {
-                this.pesquisar.prop("disabled", true);
+                this.campoPesquisar.prop("disabled", true);
             }
             else {
-                this.pesquisar.prop("disabled", false);
+                this.campoPesquisar.prop("disabled", false);
 
-                if (this.pesquisar.val() !== "") {
-                    dadosFiltrados = Utilitario.filtrarDados(dadosFiltrados, this.pesquisar.val(), propriedades);
+                if (this.campoPesquisar.val() !== "") {
+                    dadosFiltrados = Utilitario.filtrarDados(dadosFiltrados, this.campoPesquisar.val(), propriedades);
                 }
             }
 
@@ -110,9 +112,6 @@ class TelaDeBusca extends Tela {
             cabecalho.append(`<th scope="col" style="text-align: center">Vazio</th>`);
             corpo.append(`<tr><td style="text-align: center">Nenhum registro encontrado.</td></tr>`);
         }
-
-        this.pesquisavel = true;
-        this.finalizarPesquisa();
     }
 
     fecharTela() {
@@ -121,18 +120,20 @@ class TelaDeBusca extends Tela {
 
     fechar() {
         this.fecharTela();
-        this.pesquisar.val("");
+        this.campoPesquisar.val("");
         this.parametros.campo.finalizarCarregamento(this.linhaSelecionada === -1);
         this.linhaSelecionada = -1;
     }
 
     iniciarPesquisa() {
-        this.pesquisar.removeClass("carregado");
-        this.pesquisar.addClass("carregando");
+        this.pesquisavel = false;
+        this.campoPesquisar.removeClass("carregado");
+        this.campoPesquisar.addClass("carregando");
     }
 
     finalizarPesquisa() {
-        this.pesquisar.removeClass("carregando");
-        this.pesquisar.addClass("carregado");
+        this.pesquisavel = true;
+        this.campoPesquisar.removeClass("carregando");
+        this.campoPesquisar.addClass("carregado");
     }
 }

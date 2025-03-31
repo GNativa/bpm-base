@@ -1,42 +1,16 @@
 class Fonte {
-    constructor(id, nome, campoChave, campoValor, camposCorrespondentes) {
+    constructor(id, nome, campoChave, campoValor, tipo, filtro) {
         this.id = id;
         this.nome = nome;
         this.campoChave = campoChave;
         this.campoValor = campoValor;
         this.dados = [];
-        this.camposCorrespondentes = camposCorrespondentes ?? [];
+        this.tipo = tipo;
+        this.filtro = filtro;
     }
 
     definirDados(dados) {
         this.dados = dados;
-    }
-
-    obterRegistros() {
-        const registros = [];
-        const quantidade = this.dados.length;
-
-        if (quantidade === 0) {
-            return [];
-        }
-
-        const primeiro = this.dados[0];
-        let propriedades = [];
-
-        for (const propriedade in primeiro) {
-            propriedades.push(propriedade);
-        }
-
-        for (const obj of this.dados) {
-            for (const propriedade of propriedades) {
-                registros.push(obj[propriedade]);
-            }
-            const registro = new OpcaoLista(obj[chave], `${obj[chave]} - ${obj[valor]}`);
-            registros.push(registro);
-        }
-
-        console.log(registros);
-        return this.dados;
     }
 
     obterOpcoes() {

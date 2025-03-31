@@ -28,9 +28,10 @@ class CampoAnexo extends Campo {
 
     obterLinks() {
         const links = this.links;
+        const arquivos = this.campo.prop("files");
         links.html("");
 
-        for (const arquivo of this.obterElementoHtml().files) {
+        for (const arquivo of arquivos) {
             const link = $("<a></a>");
             link.attr("target", "_blank");
             link.attr("href", URL.createObjectURL(arquivo));

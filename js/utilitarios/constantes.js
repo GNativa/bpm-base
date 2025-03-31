@@ -1,19 +1,26 @@
 class Constantes {
-    static campos = {
+    static campos = Object.freeze({
         prefixoIdBotaoPesquisa: "botao-",
-        classes: {
+        classes: Object.freeze({
             carregaveis: "carregaveis-",
-        },
-        atributos: {
+        }),
+        atributos: Object.freeze({
             fonte: "data-fonte",
             campoFonte: "data-nome-fonte",
-        },
-    };
+        }),
+    });
 
-    static telas = {
+    static telas = Object.freeze({
         prefixoIdTela: "telaDe",
-        atributos: {
+        atributos: Object.freeze({
             sequenciaLinha: "data-seq-linha",
-        },
-    };
+        }),
+    });
+
+    static fontes = Object.freeze({
+        tipos: Object.freeze({
+            api: "api",
+            tabela: "tabela",
+        }),
+    });
 }
