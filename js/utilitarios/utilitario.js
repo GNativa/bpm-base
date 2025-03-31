@@ -71,9 +71,27 @@ const Utilitario = (() => {
         return dicionario;
     };
 
+    const filtrarDados = (arrayDeObjetos, valorFixo, propriedades) => {
+        const array = arrayDeObjetos ?? [];
+
+        return array.filter((registro) => {
+            for (const propriedade of propriedades) {
+                const valorRegistro = registro[propriedade].toString().toUpperCase();
+                const valorBusca = valorFixo.toUpperCase();
+
+                if (valorRegistro.includes(valorBusca)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
     return {
         salvarArquivosEmString,
         carregarArquivosDeString,
-        obterDicionario
+        obterDicionario,
+        filtrarDados,
     };
 })();

@@ -1,6 +1,6 @@
 class CampoTexto extends CampoEntrada {
     constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, altura, email) {
-        super(id, rotulo, largura, dica, fonte, campoFonte);
+        super(id, rotulo, largura, dica, null, fonte, campoFonte);
         this.tag = altura ? "textarea" : "input";
         this.campoResultante = campoResultante ?? true;
 

@@ -1,7 +1,7 @@
+// Classe abstrata
 class CampoEntrada extends Campo {
-    constructor(id, rotulo, largura, dica, fonte, campoFonte) {
-        super(id, rotulo, largura, dica, fonte, campoFonte);
-        this.tag = "input";
+    constructor(id, rotulo, largura, dica, tipo, fonte, campoFonte) {
+        super(id, rotulo, largura, dica, "input", tipo, fonte, campoFonte);
         this.filhoColuna = $(`<div></div>`);
         this.coluna.append(this.filhoColuna);
     }

@@ -57,6 +57,7 @@ class TelaDeBusca extends Tela {
     }
 
     gerarLinhas() {
+        this.iniciarPesquisa();
         this.pesquisavel = false;
 
         const tela = $(`#${this.id}`);
@@ -82,7 +83,7 @@ class TelaDeBusca extends Tela {
                 this.pesquisar.prop("disabled", false);
 
                 if (this.pesquisar.val() !== "") {
-                    dadosFiltrados = this.filtrarDados(propriedades);
+                    dadosFiltrados = Utilitario.filtrarDados(dadosFiltrados, this.pesquisar.val(), propriedades);
                 }
             }
 
@@ -111,21 +112,7 @@ class TelaDeBusca extends Tela {
         }
 
         this.pesquisavel = true;
-    }
-
-    filtrarDados(propriedades) {
-        return this.dados.filter((registro) => {
-            for (const propriedade of propriedades) {
-                const valorCelula = registro[propriedade].toString().toUpperCase();
-                const valorBusca = this.pesquisar.val().toString().toUpperCase();
-
-                if (valorCelula.includes(valorBusca)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
+        this.finalizarPesquisa();
     }
 
     fecharTela() {
@@ -134,7 +121,18 @@ class TelaDeBusca extends Tela {
 
     fechar() {
         this.fecharTela();
+        this.pesquisar.val("");
         this.parametros.campo.finalizarCarregamento(this.linhaSelecionada === -1);
         this.linhaSelecionada = -1;
+    }
+
+    iniciarPesquisa() {
+        this.pesquisar.removeClass("carregado");
+        this.pesquisar.addClass("carregando");
+    }
+
+    finalizarPesquisa() {
+        this.pesquisar.removeClass("carregando");
+        this.pesquisar.addClass("carregado");
     }
 }
