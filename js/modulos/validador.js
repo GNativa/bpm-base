@@ -30,6 +30,7 @@ class Validador {
         $(".campo")
             .trigger("change")
             .filter("[required]:visible")
+            .filter(":not([disabled])")
             .filter(function () {
                 return (this.type === "checkbox" && !this.checked) || (this.type !== "checkbox" && this.value === "");
             })

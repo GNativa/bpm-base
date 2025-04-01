@@ -178,6 +178,9 @@ const Formulario = (() => {
             new CampoData(
                 "campo7", "Campo 7", 2, `Este é um campo do tipo "data".`,
             ),
+            new CampoTexto("campo8", "A", 3),
+            new CampoTexto("campo9", "A", 3),
+            new CampoTexto("campo10", "A", 3),
         ];
 
         salvarCampos(camposSecaoA);
