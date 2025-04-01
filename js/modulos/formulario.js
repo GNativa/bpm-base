@@ -153,7 +153,7 @@ const Formulario = (() => {
             ),
             new CampoTexto(
                 "campo2", "Campo 2", 4, null, fontes["fonte1"], "A",
-                false, false,
+                false, false, false
             ),
             new CampoTexto(
                 "campo3", "Campo 3", 4, null, fontes["fonte1"], "B",
@@ -161,7 +161,7 @@ const Formulario = (() => {
             ),
             new CampoTexto(
                 "campo4", "Campo 4", 2, "As dicas não são obrigatórias.",
-                fontes["fonte1"], "C", true, false,5
+                fontes["fonte1"], "C", true, false,false, 5
             ),
             new CampoAnexo(
                 "campo5", "Campo 5", 6, "Dica", true,

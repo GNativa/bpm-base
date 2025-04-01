@@ -280,6 +280,10 @@ class Campo {
     falharCarregamento() {
         this.campo.removeClass("carregando");
         this.campo.addClass("carregado-falha");
+
+        setTimeout(() => {
+            this.campo.removeClass("carregado-falha");
+        }, 1000);
     }
 
     obterElementoHtml() {

@@ -94,7 +94,7 @@ class TelaDeBusca extends Tela {
             }
 
             for (let i = 0; i < dadosFiltrados.length; i++) {
-                const linha = $(`<tr ${Constantes.telas.atributos.sequenciaLinha}="${i}"></tr>`);
+                const linha = $(`<tr ${Constantes.gerais.atributos.sequenciaLinha}="${i}"></tr>`);
                 const busca = this;
 
                 for (const propriedade of propriedades) {
@@ -106,7 +106,7 @@ class TelaDeBusca extends Tela {
                 corpo.append(linha);
 
                 linha.on("click", () => {
-                    busca.linhaSelecionada = linha.attr(Constantes.telas.atributos.sequenciaLinha);
+                    busca.linhaSelecionada = linha.attr(Constantes.gerais.atributos.sequenciaLinha);
                     Controlador.atualizarCamposFonte(busca.parametros.campo.fonte.id, dadosFiltrados[busca.linhaSelecionada]);
                     busca.fechar();
                 });

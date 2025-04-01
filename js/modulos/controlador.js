@@ -254,7 +254,7 @@ const Controlador = (() => {
     function configurarElementosFixos() {
         const personalizacao = Formulario.personalizacao;
         $("#tituloFormulario").val(personalizacao.titulo);
-        $("#enviar").on("click", function () {
+        $("#botaoEnviar").on("click", function () {
             validarFormulario();
         });
     }

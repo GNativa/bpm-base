@@ -14,7 +14,6 @@ class CampoEntrada extends Campo {
 
         if (this.tipo !== "checkbox") {
             this.classes.push("form-control");
-            this.configurarDetalhes();
         }
         else {
             this.classes.push("form-check-input");
@@ -32,6 +31,8 @@ class CampoEntrada extends Campo {
             this.filhoColuna.append(this.label);
             this.filhoColuna.append(this.campo);
         }
+
+        this.configurarDetalhes();
     }
 
     configurarDetalhes() {
