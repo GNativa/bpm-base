@@ -36,6 +36,13 @@
     --cor-texto-desabilitado: color-mix(in oklab, var(--cor-base-contraste) 70%, #deeeff 30%);
 }
 
+@media (max-width: 600px) {
+    .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+}
+
 :disabled {
     user-select: all;
 }
