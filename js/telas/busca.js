@@ -42,8 +42,9 @@ class TelaDeBusca extends Tela {
             busca.preparada = true;
         }
 
+        this.iniciarPesquisa();
         await busca.obterDados(fonte);
-        busca.pesquisar();
+        this.finalizarPesquisa();
     }
 
     async obterDados(fonte) {
