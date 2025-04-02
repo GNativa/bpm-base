@@ -5,10 +5,10 @@
 
 const Controlador = (() => {
     // Variáveis para uso na geração e validação do formulário.
-    let validador = new Validador();
-    let etapa = null;
-    let inicializado = false;
-    let accessToken = null;
+    let validador = new Validador(); // Validador
+    let etapa = null;                    // Etapa atual do processo
+    let inicializado = false;         // Indica se o formulário foi inicializado
+    let accessToken = null;              // Access token da plataforma
 
     // Interface da API do workflow (BPM) que lida com a inicialização, salvamento de dados e erros do formulário.
     // Função "_rollback" não implementada até o momento

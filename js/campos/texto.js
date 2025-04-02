@@ -1,14 +1,14 @@
 class CampoTexto extends CampoEntrada {
     constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, limitarValores, filtrarValorLimpo, altura, email, tratarConsulta) {
         super(id, rotulo, largura, dica, null, fonte, campoFonte);
-        this.tag = altura ? "textarea" : "input";
-        this.campoResultante = campoResultante ?? true;
-        this.limitarValores = limitarValores ?? true;
-        this.filtrarValorLimpo = filtrarValorLimpo ?? false;
-        this.tratarConsulta = tratarConsulta ?? function() {};
-        this.valorAnterior = "";
-        this.menuDropdown = null;
-        this.pesquisarNovamente = true; // Controle de pesquisas para não realizar pesquisas redundantes ao filtrar algo
+        this.tag = altura ? "textarea" : "input";              // Tag do elemento HTML
+        this.campoResultante = campoResultante ?? true;        // Indica se o campo é resultante ou mestre
+        this.limitarValores = limitarValores ?? true;          // Limitar valores aos da fonte de dados ou permitir qualquer valor
+        this.filtrarValorLimpo = filtrarValorLimpo ?? false;   // Considerar valor sem ou com máscara para filtrar
+        this.tratarConsulta = tratarConsulta ?? function() {}; // Função para tratamento especial de consultas
+        this.valorAnterior = "";                               // Valor do campo no momento da última consulta realizada
+        this.menuDropdown = null;                              // Lista de opções sugeridas em campos-mestre
+        this.pesquisarNovamente = true;                        // Controle de pesquisas para não realizar pesquisas redundantes ao filtrar algo
 
         if (altura) {
             this.altura = `${altura}lh`;
@@ -93,8 +93,8 @@ class CampoTexto extends CampoEntrada {
 
             try {
                 if (this.pesquisarNovamente) {
-                    // this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.accessToken, this.fonte.filtros));
-                    this.fonte.definirDados(Constantes.fontes.dadosTeste);
+                    this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.accessToken, this.fonte.filtros));
+                    // this.fonte.definirDados(Constantes.fontes.dadosTeste);
                     this.pesquisarNovamente = false;
                 }
 

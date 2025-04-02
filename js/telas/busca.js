@@ -1,26 +1,17 @@
 class TelaDeBusca extends Tela {
     constructor(parametros) {
         super("busca", parametros);
-        this.dados = [];
-        this.campoPesquisar = null;
-        this.linhaSelecionada = -1;
-        this.preparada = false;
-        this.pesquisavel = false;
+        this.dados = [];               // Lista de registros retornados por uma consulta
+        this.campoPesquisar = null;    // Campo de pesquisa
+        this.linhaSelecionada = -1;    // Índice da linha selecionada na tabela
+        this.preparada = false;        // Indica se a tela já foi preparada ou não
+        this.pesquisavel = false;      //
     }
 
     async abrir() {
         const busca = this;
         const tela = $(`#${this.id}`);
         const campo = this.parametros.campo;
-        busca.campoPesquisar = tela.find("#buscaPesquisar");
-
-        busca.campoPesquisar.on("keydown", (event) => {
-            if (busca.campoPesquisar.val() === "") {
-                busca.pesquisar();
-            } else if (busca.pesquisavel && event.key === "Enter") {
-                busca.pesquisar();
-            }
-        });
 
         busca.pesquisavel = false;
 
@@ -30,6 +21,15 @@ class TelaDeBusca extends Tela {
         tela.find("div.titulo-tela").text(campo?.fonte?.nome ?? "Pesquisa");
 
         if (!busca.preparada) {
+            busca.campoPesquisar = tela.find("#buscaPesquisar");
+            busca.campoPesquisar.on("keydown", (event) => {
+                if (busca.campoPesquisar.val() === "") {
+                    busca.pesquisar();
+                } else if (busca.pesquisavel && event.key === "Enter") {
+                    busca.pesquisar();
+                }
+            });
+
             // Fechar a tela ao clicar no X ou fora dela
             tela.find("#fecharBusca").add("#telaDeBusca").on("click", function () {
                 busca.fechar();
@@ -55,8 +55,8 @@ class TelaDeBusca extends Tela {
             this.dados = fonte.dados;
         }
         else {
-            this.dados = Constantes.fontes.dadosTeste;
-            //dados = [];
+            // this.dados = Constantes.fontes.dadosTeste;
+            this.dados = [];
         }
     }
 

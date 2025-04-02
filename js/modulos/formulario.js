@@ -5,11 +5,12 @@
 
 const Formulario = (() => {
     // Variáveis para uso em validações, consultas, etc.
-    let campos = {};
+    let campos = {};                                    // Objeto contendo referências aos campos do formulário
 
-    let variavelA = true, variavelB = "";
+    let variavelA = true,
+        variavelB = "";
 
-    let secaoA,
+    let secaoA,                                             // Seções do formulário com quebra de linha ou também um título
         secaoB,
         secaoC;
 
@@ -17,29 +18,29 @@ const Formulario = (() => {
         titulo: "Formulário",
     };
 
-    // Listas dos IDs dos campos que serão obrigatórios, bloqueados ou ocultos por etapa
-    const camposObrigatorios = {
+    const camposObrigatorios = {                       // Listas dos IDs dos campos obrigatórios por etapa
         "etapa1": ["campo2", "campo3", "campo4", "campo5"],
         "etapa2": ["campo1", "campo2", "campo3"],
         "etapa3": ["campo1", "campo2", "campo3"],
     };
 
-    const camposBloqueados = {
+    const camposBloqueados = {                         // Listas dos IDs dos campos bloqueados por etapa
         "etapa1": ["campo1", "campo7"],
         "etapa2": ["campo1", "campo2", "campo3"],
         "etapa3": ["campo1", "campo2", "campo3"],
     };
 
-    const camposOcultos = {
+    const camposOcultos = {                            // Listas dos IDs dos campos ocultos por etapa
         "etapa1": [],
         "etapa2": [],
         "etapa3": [],
     };
 
+    // Objeto com referências a fontes de dados
     const fontes = {
-        "fonte1": new Fonte("fonte1", "Fonte 1", "codigo", "descricao",
+        "bancos1": new Fonte("bancos1", "Bancos", "codigo", "descricao",
             Constantes.fontes.tipos.tabela),
-        "fonte2": new Fonte("fonte1", "Fonte 2", "codigo", "descricao",
+        "bancos2": new Fonte("bancos2", "Bancos", "codigo", "descricao",
             Constantes.fontes.tipos.tabela),
     };
 
@@ -152,16 +153,16 @@ const Formulario = (() => {
                 "campo1", "Campo 1", 2, "Esta é uma caixa de seleção.",
             ),
             new CampoTexto(
-                "campo2", "Campo 2", 4, null, fontes["fonte1"], "A",
+                "campo2", "Código do banco", 4, null, fontes["bancos1"], "A",
                 false, false, false
             ),
             new CampoTexto(
-                "campo3", "Campo 3", 4, null, fontes["fonte1"], "B",
+                "campo3", "Abreviatura", 4, null, fontes["bancos1"], "B",
                 true, false,
             ),
             new CampoTexto(
-                "campo4", "Campo 4", 2, "As dicas não são obrigatórias.",
-                fontes["fonte1"], "C", true, false,false, 5
+                "campo4", "Nome", 2, "As dicas não são obrigatórias.",
+                fontes["bancos1"], "C", true, false,false, 5
             ),
             new CampoAnexo(
                 "campo5", "Campo 5", 6, "Dica", true,

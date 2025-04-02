@@ -3,34 +3,34 @@
     - Representação abstrata de um campo no formulário.
  */
 class Campo {
-    constructor(id, rotulo, largura, dica, tag, tipo, fonte, campoFonte) {
-        this.id = id;
-        this.rotulo = rotulo;
-        this.largura = largura;
-        this.dica = dica ?? null;
-        this.fonte = fonte ?? null;
-        this.campoFonte = campoFonte ?? null;
-        this.campoMestre = null;
+    constructor(id, rotulo, largura, dica, tag, tipo, fonte, campoFonte, listaObjetos) {
+        this.id = id;                            // Atributo "id" do elemento HTML
+        this.rotulo = rotulo;                    // Atributo "title" do elemento HTML
+        this.largura = largura;                  // Largura do campo (respeitando classes .col-*)
+        this.dica = dica ?? null;                // Dica para explicação do campo
+        this.fonte = fonte ?? null;              // Fonte de dados relacionada
+        this.campoFonte = campoFonte ?? null;    // Nome do campo da fonte de dados ao qual este corresponde
+        this.campoMestre = null;                 // Campo mestre deste campo
 
-        this.tag = tag;
-        this.tipo = tipo;
-        this.classes = ["campo"];
+        this.tag = tag;                          // Tag do elemento HTML
+        this.tipo = tipo;                        // Atributo "type" do elemento HTML, caso seja um input
+        this.classes = ["campo"];                // Classes CSS do campo
 
-        this.obrigatorio = false;
-        this.visivel = true;
-        this.editavel = true;
-        this.valido = true;
+        this.obrigatorio = false;                // Indica se o campo é obrigatório
+        this.visivel = true;                     // Indica se o campo está visível
+        this.editavel = true;                    // Indica se o campo pode ser editado
+        this.valido = true;                      // Indica se o campo é válido
 
-        this.obrigatoriedadeSobrescrita = false;
-        this.visibilidadeSobrescrita = false;
-        this.editabilidadeSobrescrita = false;
+        this.obrigatoriedadeSobrescrita = false; // Indica se a obrigatoriedade do campo só pode ser definida pela etapa
+        this.visibilidadeSobrescrita = false;    // Indica se a visibilidade do campo só pode ser definida pela etapa
+        this.editabilidadeSobrescrita = false;   // Indica se do campo só pode ser editado pela etapa
 
-        this.consistenciaAtiva = null;
-        this.feedback = null;
+        this.consistenciaAtiva = null;           // Consistência ativa no campo
+        this.feedback = null;                    // Elemento div que exibe uma mensagem abaixo do campo nos casos de validações.
 
-        this.coluna = $("<div></div>");
-        this.campo = null;
-        this.label = null;
+        this.coluna = $("<div></div>");          // Elemento div com classes .col-*
+        this.campo = null;                       // Elemento jQuery correspondente ao campo
+        this.label = null;                       // Elemento label contendo a descrição do campo
     }
 
     inicializar() {

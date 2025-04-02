@@ -2,7 +2,7 @@
 class CampoEntrada extends Campo {
     constructor(id, rotulo, largura, dica, tipo, fonte, campoFonte) {
         super(id, rotulo, largura, dica, "input", tipo, fonte, campoFonte);
-        this.filhoColuna = $(`<div></div>`);
+        this.filhoColuna = $(`<div></div>`);  // Coluna interna ao div.col
         this.coluna.append(this.filhoColuna);
     }
 
