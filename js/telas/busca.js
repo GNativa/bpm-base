@@ -48,7 +48,7 @@ class TelaDeBusca extends Tela {
     }
 
     async obterDados(fonte) {
-        const token = Controlador.accessToken;
+        const token = Controlador.obterToken();
 
         if (token !== null) {
             fonte.definirDados(await Consultor.carregarFonte(fonte, token));

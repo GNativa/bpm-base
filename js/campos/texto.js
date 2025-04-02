@@ -93,7 +93,7 @@ class CampoTexto extends CampoEntrada {
 
             try {
                 if (this.pesquisarNovamente) {
-                    this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.accessToken, this.fonte.filtros));
+                    this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.obterToken(), this.fonte.filtros));
                     // this.fonte.definirDados(Constantes.fontes.dadosTeste);
                     this.pesquisarNovamente = false;
                 }

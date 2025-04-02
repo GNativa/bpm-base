@@ -202,10 +202,13 @@ const Controlador = (() => {
                 + "no formulário para prosseguir.";
             Mensagem.exibir(titulo, mensagem, "aviso");
             throw new Error(mensagem);
-        }
-        else {
+        } else {
             Mensagem.exibir(titulo, mensagem, "sucesso");
         }
+    }
+
+    function obterToken() {
+        return accessToken;
     }
 
     // configurarEtapas(): void
@@ -269,6 +272,6 @@ const Controlador = (() => {
     }
 
     return {
-        accessToken, atualizarCamposFonte, inicializar
+        obterToken, atualizarCamposFonte, inicializar
     };
 })();
