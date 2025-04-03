@@ -71,12 +71,12 @@ const Utilitario = (() => {
         return dicionario;
     };
 
-    const filtrarDados = (arrayDeObjetos, valorFixo, registroModelo, propriedadeEspecifica) => {
+    const filtrarDados = (arrayDeObjetos, valorFixo, chavesValores, propriedadeEspecifica) => {
         const array = arrayDeObjetos ?? [];
         const propriedades = [];
 
         if (!propriedadeEspecifica) {
-            for (const propriedade in registroModelo) {
+            for (const propriedade in chavesValores) {
                 propriedades.push(propriedade);
             }
         }

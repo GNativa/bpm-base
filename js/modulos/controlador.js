@@ -140,9 +140,8 @@ const Controlador = (() => {
         for (const nomeFonte in Formulario.fontes) {
             const fonte = Formulario.fontes[nomeFonte];
 
-            const dados = await Consultor.carregarFonte(fonte, token)
-            fonte.definirDados(dados);
-            console.log(dados);
+            fonte.definirDados(await Consultor.carregarFonte(fonte, token));
+            console.log(fonte.dados);
 
             /* Trocar isso para variar conforme o tipo do campo ou algo assim
             for (const campo of fonte.camposCorrespondentes) {

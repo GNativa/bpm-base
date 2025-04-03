@@ -174,12 +174,12 @@ class CampoTexto extends CampoEntrada {
 
         for (let i = 0; i < quantidadeLinhas; i++) {
             const itemDropdown = $(`<li class="dropdown-item"><a href="#" class="dropdown-item"></a></li>`);
-            itemDropdown.attr(Constantes.gerais.atributos.sequenciaLinha, i);
+            itemDropdown.attr(Constantes.gerais.atributos.sequencia, i);
             itemDropdown.text(dadosFiltrados[i][this.campoFonte]);
             itemDropdown.on("click", () => {
                 Controlador.atualizarCamposFonte(
                     this.fonte.id,
-                    dadosFiltrados[itemDropdown.attr(Constantes.gerais.atributos.sequenciaLinha,)]
+                    dadosFiltrados[itemDropdown.attr(Constantes.gerais.atributos.sequencia,)]
                 );
                 this.finalizarCarregamento();
                 this.pesquisarNovamente = true;
@@ -197,5 +197,11 @@ class CampoTexto extends CampoEntrada {
         }
 
         bootstrap.Dropdown.getOrCreateInstance(this.campo).toggle();
+    }
+
+    notificarFimDePesquisa(selecionouLinha, valor) {
+        this.finalizarCarregamento(!selecionouLinha);
+        this.valorAnterior = valor ?? this.val();
+        this.pesquisarNovamente = false;
     }
 }
