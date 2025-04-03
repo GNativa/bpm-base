@@ -53,7 +53,7 @@ class TelaDeBusca extends Tela {
             }
             catch (e) {
                 Mensagem.exibir("Erro ao carregar dados",
-                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" (ID "${this.fonte.id}")`
+                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" `
                     + `para a tela de busca: ${e}`,
                     "erro");
                 this.falharPesquisa();
@@ -61,7 +61,7 @@ class TelaDeBusca extends Tela {
         }
         else {
             Mensagem.exibir("Erro ao carregar dados",
-                `Houve um erro desconhecido ao carregar os dados. Feche e abra a tela para tentar`
+                `Houve um erro desconhecido ao carregar os dados. Feche e abra a tela para tentar `
                 + `realizar a pesquisa novamente.`,
                 "erro");
             this.falharPesquisa();
@@ -70,6 +70,7 @@ class TelaDeBusca extends Tela {
     }
 
     async pesquisar(carregarDados) {
+        this.limparLinhas();
         this.iniciarPesquisa();
 
         if (carregarDados) {
@@ -80,12 +81,20 @@ class TelaDeBusca extends Tela {
         this.finalizarPesquisa();
     }
 
+    limparLinhas() {
+        const tela = $(`#${this.id}`);
+        const cabecalho = tela.find("thead tr");
+        cabecalho.text("");
+        const corpo = tela.find("tbody");
+        corpo.text("");
+    }
+
     gerarLinhas() {
         const tela = $(`#${this.id}`);
         const dados = this.fonte.dados;
         const descricoes = this.fonte.descricoes;
-        const cabecalho = tela.find("thead tr").empty();
-        const corpo = tela.find("tbody").empty();
+        const cabecalho = tela.find("thead tr");
+        const corpo = tela.find("tbody");
 
         if (dados.length > 0) {
             for (const chave in descricoes) {
