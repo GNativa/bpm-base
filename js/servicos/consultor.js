@@ -11,8 +11,8 @@ const Consultor = (() => {
 
     const carregarFonte = async (fonte, token, filtros, parametrosConsulta, urlApi, metodo) => {
         if (fonte.tipo === Constantes.fontes.tipos.tabela) {
-            const url = "https://platform.senior.com.br/t/senior.com.br/bridge/1.0/rest/platform/ecm_form/actions/getResultSet";
-            const corpo = {
+            let url = "https://platform.senior.com.br/t/senior.com.br/bridge/1.0/rest/platform/ecm_form/actions/getResultSet";
+            let corpo = {
                 dataSource: `${fonte.nome}`,
                 token: `${token}`,
                 top: 50000,
@@ -28,13 +28,13 @@ const Consultor = (() => {
                     // }
                 // ]
             };
-            const parametros = parametrosConsulta ?? {};
+            let parametros = parametrosConsulta ?? {};
 
             for (const parametro in parametros) {
                 corpo[parametro] = parametros[parametro];
             }
 
-            const resposta = await fetch(url, {
+            let resposta = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -44,7 +44,17 @@ const Consultor = (() => {
                 body: JSON.stringify(corpo),
             });
 
-            const json = await resposta.json();
+            let json = await resposta.json();
+
+            if (json["message"]) {
+                throw Error("Não foi concedida a devida autorização para consultas de dados.");
+            }
+
+            if (json["errorCode"]) {
+                let msg = json["message"];
+                throw Error(msg);
+            }
+
             return JSON.parse(json["data"].replace("\\", ""))["value"];
         }
 

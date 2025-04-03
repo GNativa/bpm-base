@@ -71,7 +71,7 @@
 }
 
 .erro {
-    border-bottom-color: var(--cor-erro);
+    color: var(--cor-erro);
 }
 
 .toast {

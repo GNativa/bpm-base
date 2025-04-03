@@ -39,7 +39,11 @@ const Formulario = (() => {
     // Objeto com referências a fontes de dados
     const fontes = {
         "bancos1": new Fonte("bancos1", "Bancos", "codigo", "descricao",
-            Constantes.fontes.tipos.tabela),
+            Constantes.fontes.tipos.tabela, {
+                "codigo": "Código",
+                "abreviatura": "Abreviatura",
+                "nome": "Nome",
+            }),
         "bancos2": new Fonte("bancos2", "Bancos", "codigo", "descricao",
             Constantes.fontes.tipos.tabela),
     };
@@ -179,9 +183,6 @@ const Formulario = (() => {
             new CampoData(
                 "campo7", "Campo 7", 2, `Este é um campo do tipo "data".`,
             ),
-            new CampoTexto("campo8", "A", 3),
-            new CampoTexto("campo9", "A", 3),
-            new CampoTexto("campo10", "A", 3),
         ];
 
         salvarCampos(camposSecaoA);
