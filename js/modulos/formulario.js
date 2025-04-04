@@ -19,33 +19,64 @@ const Formulario = (() => {
     };
 
     const camposObrigatorios = {                       // Listas dos IDs dos campos obrigatórios por etapa
-        "etapa1": ["campo2", "campo3", "campo4", "campo5"],
-        "etapa2": ["campo1", "campo2", "campo3"],
-        "etapa3": ["campo1", "campo2", "campo3"],
+        "etapa1": ["campo2", "campo3"],
     };
 
     const camposBloqueados = {                         // Listas dos IDs dos campos bloqueados por etapa
-        "etapa1": ["campo1", "campo7"],
-        "etapa2": ["campo1", "campo2", "campo3"],
-        "etapa3": ["campo1", "campo2", "campo3"],
+        "etapa1": [],
     };
 
     const camposOcultos = {                            // Listas dos IDs dos campos ocultos por etapa
         "etapa1": [],
-        "etapa2": [],
-        "etapa3": [],
     };
 
     // Objeto com referências a fontes de dados
     const fontes = {
-        "bancos1": new Fonte("bancos1", "Bancos", "codigo", "descricao",
-            Constantes.fontes.tipos.tabela, {
-                "codigo": "Código",
-                "abreviatura": "Abreviatura",
-                "nome": "Nome",
-            }),
-        "bancos2": new Fonte("bancos2", "Bancos", "codigo", "descricao",
-            Constantes.fontes.tipos.tabela),
+        "cnpj": new Fonte("cnpj", "Consulta de pessoas jurídicas", null, null,
+            Constantes.fontes.tipos.api, {
+                "cnpj": "CNPJ",
+                "razaoSocial": "Razão social",
+                "nomeFantasia": "Nome fantasia",
+            },
+            null,
+            "https://publica.cnpj.ws/cnpj/",
+            new ParametrosConsulta({
+                    method: "GET"
+                },
+                null, null,
+                () => {
+                    return campos["campo2"].val();
+                }
+            ),
+            function (retorno) {
+
+            },
+            function (dados) {
+                let dadosCnpj = dados[0];
+                let registro = {};
+
+                registro["cnpj"] = dadosCnpj["estabelecimento"]["cnpj"];
+                registro["razaoSocial"] = dadosCnpj["razao_social"];
+                registro["nomeFantasia"] = dadosCnpj["estabelecimento"]["nome_fantasia"] ?? "";
+                registro["cep"] = dadosCnpj["estabelecimento"]["cep"];
+                registro["estado"] = dadosCnpj["estabelecimento"]["estado"]["sigla"];
+                registro["cidade"] = dadosCnpj["estabelecimento"]["cidade"]["nome"];
+                const tipoLogradouro = dadosCnpj["estabelecimento"]["tipo_logradouro"] ?? "";
+                registro["logradouro"] = (tipoLogradouro !== "" ? (tipoLogradouro + " ") : "") + dadosCnpj["estabelecimento"]["logradouro"];
+                registro["numero"] = dadosCnpj["estabelecimento"]["numero"];
+                registro["bairro"] = dadosCnpj["estabelecimento"]["bairro"];
+                registro["complemento"] = (dadosCnpj["estabelecimento"]["complemento"] ?? "").replace(/\s\s+/g, " ");
+                registro["email"] = dadosCnpj["estabelecimento"]["email"];
+                const ddd1 = dadosCnpj["estabelecimento"]["ddd1"] ?? "";
+                const telefone1 = dadosCnpj["estabelecimento"]["telefone1"] ?? "";
+                registro["telefone"] = ddd1 + telefone1;
+                const ddd2 = dadosCnpj["estabelecimento"]["ddd2"] ?? "";
+                const telefone2 = dadosCnpj["estabelecimento"]["telefone2"] ?? "";
+                registro["telefoneAdicional"] = ddd2 + telefone2;
+
+                return [registro];
+            },
+        ),
     };
 
     // obterValidacoes(): array<Validacao>
@@ -53,32 +84,7 @@ const Formulario = (() => {
         Validações a serem usadas no formulário.
      */
     function obterValidacoes() {
-        return [
-            new Validacao(() => {
-                    return false;
-                },
-                "Feedback 1",
-                [campos["campo1"]],
-                [campos["campo1"], campos["campo2"], campos["campo3"]],
-                [],
-                null,
-                null,
-                [campos["campo1"], campos["campo2"], campos["campo3"]],
-                [campos["campo1"], campos["campo2"], campos["campo3"]],
-            ),
-            new Validacao(() => {
-                    return false;
-                },
-                "Feedback 2",
-                [campos["campo2"], campos["campo3"]],
-                [campos["campo1"], campos["campo2"], campos["campo3"]],
-                [],
-                [campos["campo1"], campos["campo2"], campos["campo3"]],
-                [campos["campo1"], campos["campo2"], campos["campo3"]],
-                null,
-                null,
-            ),
-        ];
+        return [];
     }
 
     // salvarDados(): Promise<{}>
@@ -157,16 +163,16 @@ const Formulario = (() => {
                 "campo1", "Campo 1", 2, "Esta é uma caixa de seleção.",
             ),
             new CampoTexto(
-                "campo2", "Código do banco", 4, null, fontes["bancos1"], "codigo",
+                "campo2", "CNPJ", 4, null, fontes["cnpj"], "cnpj",
                 false, false, false
             ),
             new CampoTexto(
-                "campo3", "Abreviatura", 4, null, fontes["bancos1"], "abreviatura",
+                "campo3", "Razão social", 4, null, fontes["cnpj"], "razaoSocial",
                 true, false,
             ),
             new CampoTexto(
-                "campo4", "Nome", 2, "As dicas não são obrigatórias.",
-                fontes["bancos1"], "nome", true, false,false, 5
+                "campo4", "Nome fantasia", 2, "As dicas não são obrigatórias.",
+                fontes["cnpj"], "nomeFantasia", true, true, null, 5
             ),
             new CampoAnexo(
                 "campo5", "Campo 5", 6, "Dica", true,
@@ -189,7 +195,6 @@ const Formulario = (() => {
         secaoA = new Secao("secaoA", "Seção A", camposSecaoA);
 
         campos["campo3"].definirCampoMestre(campos["campo2"]);
-        campos["campo4"].definirCampoMestre(campos["campo2"]);
     }
 
     // salvarDados(listaDeCampos: array<Campo>): void

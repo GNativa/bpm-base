@@ -1,22 +1,16 @@
-const Consultor = (() => {
-    const obterDados = (url) => {
-        return new Promise((resolve, reject) => {
-            $.getJSON(url, function(data) {
-                resolve(data);
-            }).fail(function(jqxhr, textStatus, error) {
-                reject(error);
-            });
-        });
-    };
-
-    const carregarFonte = async (fonte, token, filtros, parametrosConsulta, urlApi, metodo) => {
+class Consultor {
+    static async carregarFonte(fonte, token) {
         if (fonte.tipo === Constantes.fontes.tipos.tabela) {
-            let url = "https://platform.senior.com.br/t/senior.com.br/bridge/1.0/rest/platform/ecm_form/actions/getResultSet";
+            if (!token) {
+                throw new Error("Os dados não puderam ser carregados. Tente novamente mais tarde.");
+            }
+
+            let urlConsulta = "https://platform.senior.com.br/t/senior.com.br/bridge/1.0/rest/platform/ecm_form/actions/getResultSet";
             let corpo = {
                 dataSource: `${fonte.nome}`,
                 token: `${token}`,
                 top: 50000,
-                filters: filtros ?? [],
+                filters: fonte.filtros ?? [],
                 // filters: [
                     // {
                     //   "logicalOperator": "AND",
@@ -28,13 +22,8 @@ const Consultor = (() => {
                     // }
                 // ]
             };
-            let parametros = parametrosConsulta ?? {};
 
-            for (const parametro in parametros) {
-                corpo[parametro] = parametros[parametro];
-            }
-
-            let resposta = await fetch(url, {
+            let init = {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -42,7 +31,20 @@ const Consultor = (() => {
                     "Authorization": `bearer ${token}`,
                 },
                 body: JSON.stringify(corpo),
-            });
+            };
+
+            let parametrosRequisicao = fonte.parametros.requisicao;
+            let parametrosCorpo = fonte.parametros.corpo;
+
+            for (const parametro in parametrosRequisicao) {
+                init[parametro] = parametrosRequisicao[parametro];
+            }
+
+            for (const parametro in parametrosCorpo) {
+                corpo[parametro] = parametrosCorpo[parametro];
+            }
+
+            let resposta = await fetch(urlConsulta, init);
 
             let json = await resposta.json();
 
@@ -59,21 +61,44 @@ const Consultor = (() => {
         }
 
         if (fonte.tipo === Constantes.fontes.tipos.api) {
-            const url = urlApi;
-            const corpo = parametrosConsulta;
+            let urlConsulta = fonte.urlBase;
+            const parametrosUrl = fonte.parametros.url;
+
+            if (fonte.parametros.obterUrlDinamica !== null) {
+                urlConsulta += fonte.parametros.obterUrlDinamica();
+            }
+            else {
+                for (const parametro of parametrosUrl) {
+                    urlConsulta += parametro;
+                }
+            }
+
             const init = {
-                method: metodo,
+                method: "GET",
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                 },
             };
 
-            if (corpo) {
+            let parametrosRequisicao = fonte.parametros.requisicao;
+
+            for (const parametro in parametrosRequisicao) {
+                init[parametro] = parametrosRequisicao[parametro];
+            }
+
+            if (init.method !== "GET" && init.method !== "HEAD") {
+                const corpo = fonte.parametros.corpo;
+                let parametrosCorpo = fonte.parametros.corpo;
+
+                for (const parametro in parametrosCorpo) {
+                    corpo[parametro] = parametrosCorpo[parametro];
+                }
+
                 init.body = JSON.stringify(corpo);
             }
 
-            const resposta = await fetch(url, init);
+            const resposta = await fetch(urlConsulta, init);
             const json = await resposta.json();
 
             if (typeof json === "object") {
@@ -83,6 +108,4 @@ const Consultor = (() => {
 
         return [{}];
     }
-
-    return { obterDados, carregarFonte };
-})();
+}

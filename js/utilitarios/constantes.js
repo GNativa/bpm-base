@@ -1,7 +1,7 @@
 class Constantes {
     static gerais = Object.freeze({
         atributos: Object.freeze({
-            sequencia: "data-sequencia",
+            sequencia: "data-index",
         }),
     });
 
@@ -17,8 +17,11 @@ class Constantes {
     });
 
     static telas = Object.freeze({
-        prefixoIdTela: "telaDe",
+        busca: "busca",
         atributos: Object.freeze({
+            id: "tela-",
+            idTitulo: "titulo-",
+            idFechar: "fechar-",
         }),
     });
 

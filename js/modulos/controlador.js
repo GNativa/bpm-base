@@ -1,4 +1,4 @@
-// Controlador()
+// Controlador
 /*
     Responsável por inicializar o formulário e prover funcionalidades genéricas.
  */
@@ -254,8 +254,7 @@ const Controlador = (() => {
         do formulário.
      */
     function configurarElementosFixos() {
-        const personalizacao = Formulario.personalizacao;
-        $("#tituloFormulario").val(personalizacao.titulo);
+        $("#tituloFormulario").text(Formulario.personalizacao.titulo);
         $("#botaoEnviar").on("click", function () {
             validarFormulario();
         });

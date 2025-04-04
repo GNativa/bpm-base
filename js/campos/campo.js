@@ -58,20 +58,14 @@ class Campo {
         const tag = this.tag;
         const tipo = this.tipo;
 
-        this.campo = $(`<${tag}></${tag}>`);
+        this.campo = $(`<${tag} id="${id}" name="${id}" placeholder="${rotulo}" title="${rotulo}"></${tag}>`);
         this.label = $("<label></label>");
 
-        this.campo.attr("id", id);
-        this.campo.attr("name", id);
-        this.campo.attr("placeholder", rotulo);
-        this.campo.attr("title", rotulo);
-
         if (dica !== null) {
-            const icone = $("<i></i>");
-            icone.addClass("bi bi-info-circle-fill me-2 pe-auto informativo");
-            icone.attr("data-bs-toggle", "tooltip");
-            icone.attr("data-bs-placement", "top");
-            icone.attr("data-bs-title", dica);
+            const icone = $(`
+                <i class="bi bi-info-circle-fill me-2 pe-auto informativo" data-bs-toggle="tooltip"
+                   data-bs-placement="top" data-bs-title="${dica}"></i>
+            `);
             this.label.append(icone);
         }
 
@@ -86,7 +80,7 @@ class Campo {
 
         this.configurarCampo();
 
-        this.feedback = $("<div></div>");
+        this.feedback = $(`<div class="feedback"></div>`);
         this.feedback.addClass("feedback");
         this.coluna.append(this.feedback);
         this.feedback.hide();

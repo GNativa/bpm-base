@@ -1,164 +1,166 @@
 class TelaDeBusca extends Tela {
     constructor(parametros) {
-        super("busca", parametros);
-        this.fonte = parametros.campo.fonte; // Fonte de dados correspondente à tela
-        this.campoPesquisar = null;          // Campo de pesquisa
-        this.linhaSelecionada = -1;          // Índice da linha selecionada na tabela
-        this.preparada = false;              // Indica se a tela já foi preparada ou não
-        this.pesquisavel = false;            //
-        this.dadosFiltrados = [];            // Dados filtrados da fonte de dados
+        super(Constantes.telas.busca, parametros);
+        this.callbackSelecionado = parametros.naSelecao   // Função para chamar na seleção da linha
+            ?? ((registro) => {});
+        this.callbackFechamento = parametros.noFechamento // Função para chamar no fechamento sem seleção
+            ?? (() => {});
+        this.fonte = parametros.campo?.fonte ?? null;     // Fonte de dados correspondente à tela
+        this.titulo = this.fonte.nome;                    // Título da tela baseado no nome da fonte
+        this.campoPesquisar = null;                       // Campo de pesquisa
+        this.linhaSelecionada = -1;                       // Índice da linha selecionada na tabela
+        this.preparada = false;                           // Indica se a tela já foi preparada ou não
+        this.pesquisavel = false;                         // Indica se uma pesquisa pode ser feita ou não
+        this.dadosFiltrados = [];                         // Dados filtrados da fonte de dados
+    }
+
+    prepararInterface() {
+        if (this.container) {
+            this.container.find(".secao-superior").append($(`
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" id="${this.id}-pesquisar" name="${this.id}-pesquisar" class="form-control" placeholder="Pesquisar"
+                                style="color: var(--bs-body-color);">
+                            <label for="${this.id}-pesquisar" style="color: var(--bs-body-color);">
+                                <i class="bi bi-info-circle-fill me-2 pe-auto informativo" data-bs-toggle="tooltip"
+                                   data-bs-placement="top" data-bs-title="Digite e pressione Enter para pesquisar."></i>Pesquisar
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `));
+
+            this.campoPesquisar = $(`#${this.id}-pesquisar`);
+
+            this.container.find(".fundo").append($(`
+                <div class="row">
+                    <div class="col">
+                        <div class="tabela">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `));
+        }
+
+        this.campoPesquisar.on("keydown", async (event) => {
+            if (this.campoPesquisar.val() === "" || (this.pesquisavel && event.key === "Enter")) {
+                this.filtrarDados();
+            }
+        });
     }
 
     async abrir() {
-        const busca = this;
-        const tela = $(`#${this.id}`);
-        const campo = this.parametros.campo;
+        super.abrir();
 
-        busca.pesquisavel = false;
+        this.linhaSelecionada = -1;
+        this.pesquisavel = false;
 
-        tela.removeClass("d-none");
-        tela.find("div.titulo-tela").text(campo?.fonte?.nome ?? "Pesquisa");
-
-        if (!busca.preparada) {
-            busca.campoPesquisar = tela.find("#buscaPesquisar");
-            busca.campoPesquisar.on("keydown", (event) => {
-                if (busca.campoPesquisar.val() === "") {
-                    busca.pesquisar();
-                } else if (busca.pesquisavel && event.key === "Enter") {
-                    busca.pesquisar();
-                }
-            });
-
-            // Fechar a tela ao clicar no X ou fora dela
-            tela.find("#fecharBusca").add("#telaDeBusca").on("click", function () {
-                busca.fechar();
-            });
-            // Impedir a tela em si de se fechar com um clique
-            tela.find("div.fundo").on("click", function (event) {
-                event.stopPropagation();
-            });
-
-            busca.preparada = true;
+        if (!this.preparada) {
+            this.prepararInterface();
+            this.preparada = true;
         }
 
-        await this.pesquisar(true);
+        await this.pesquisar();
     }
 
-    async obterDados(fonte) {
+    async carregarDados() {
+        if (!this.fonte) return;
+
         const token = Controlador.obterToken();
 
-        if (token !== null) {
-            try {
-                fonte.definirDados(await Consultor.carregarFonte(fonte, token, fonte.filtros));
-            }
-            catch (e) {
-                Mensagem.exibir("Erro ao carregar dados",
-                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" `
-                    + `para a tela de busca: ${e}`,
-                    "erro");
-                this.falharPesquisa();
-            }
+        try {
+            const dados = await Consultor.carregarFonte(this.fonte, token);
+            this.fonte.tratarRetorno(dados);
+            this.fonte.definirDados(dados);
+            // this.fonte.dados = [{"cnpj": "02476501000174"}];
+            this.dadosFiltrados = this.fonte.dados;
         }
-        else {
+        catch (e) {
             Mensagem.exibir("Erro ao carregar dados",
-                `Houve um erro desconhecido ao carregar os dados. Feche e abra a tela para tentar `
-                + `realizar a pesquisa novamente.`,
+                `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" `
+                + `para a tela de busca: ${e}`,
                 "erro");
+            this.dadosFiltrados = [];
             this.falharPesquisa();
-            this.fonte.definirDados([]);
+        }
+        finally {
+            this.renderizarTabela();
         }
     }
 
-    async pesquisar(carregarDados) {
-        this.limparLinhas();
-        this.iniciarPesquisa();
+    filtrarDados() {
+        const termo = this.campoPesquisar.val();
+        this.dadosFiltrados = Utilitario.filtrarDados(this.dadosFiltrados, termo, this.fonte.descricoes)
+        this.renderizarTabela();
+    }
 
-        if (carregarDados) {
-            await this.obterDados(this.parametros.campo.fonte);
+    renderizarTabela() {
+        const descricoes = this.fonte.descricoes;
+        const cabecalho = this.container.find("thead tr");
+        const corpo = this.container.find("tbody");
+
+        if (this.dadosFiltrados.length === 0) {
+            cabecalho.append(`<th scope="col" style="text-align: center">Vazio</th>`);
+            corpo.append(`<tr><td style="text-align: center">Nenhum registro encontrado.</td></tr>`);
+            return;
         }
 
-        this.gerarLinhas();
+        for (const chave in descricoes) {
+            cabecalho.append($(`<th scope="col">${descricoes[chave]}</th>`));
+        }
+
+        for (let i = 0; i < this.dadosFiltrados.length; i++) {
+            const linha = $(`<tr></tr>`);
+
+            for (const propriedade in descricoes) {
+                const coluna = $(`<td></td>`);
+                coluna.text(this.dadosFiltrados[i][propriedade]);
+                linha.append(coluna);
+            }
+
+            corpo.append(linha);
+
+            linha.on("click", () => {
+                this.selecionarItem(i);
+            });
+        }
+    }
+
+    selecionarItem(linha) {
+        this.linhaSelecionada = linha;
+
+        this.fechar();
+        this.callbackSelecionado(this.dadosFiltrados[linha]);
+    }
+
+    async pesquisar() {
+        this.limparLinhas();
+        this.iniciarPesquisa();
+        await this.carregarDados();
         this.finalizarPesquisa();
     }
 
     limparLinhas() {
-        const tela = $(`#${this.id}`);
-        const cabecalho = tela.find("thead tr");
+        const cabecalho = this.container.find("thead tr");
         cabecalho.text("");
-        const corpo = tela.find("tbody");
+        const corpo = this.container.find("tbody");
         corpo.text("");
     }
 
-    gerarLinhas() {
-        const tela = $(`#${this.id}`);
-        const dados = this.fonte.dados;
-        const descricoes = this.fonte.descricoes;
-        const cabecalho = tela.find("thead tr");
-        const corpo = tela.find("tbody");
-
-        if (dados.length > 0) {
-            for (const chave in descricoes) {
-                cabecalho.append($(`<th scope="col">${descricoes[chave]}</th>`));
-            }
-
-            this.dadosFiltrados = [...dados];
-
-            if (dados.length === 1) {
-                this.campoPesquisar.prop("disabled", true);
-            }
-            else {
-                this.campoPesquisar.prop("disabled", false);
-
-                if (this.campoPesquisar.val() !== "") {
-                    this.dadosFiltrados = Utilitario.filtrarDados(this.dadosFiltrados, this.campoPesquisar.val(), descricoes);
-                }
-            }
-
-            for (let i = 0; i < this.dadosFiltrados.length; i++) {
-                const linha = $(`<tr></tr>`);
-                linha.attr(Constantes.gerais.atributos.sequencia, i);
-
-                for (const propriedade in descricoes) {
-                    const coluna = $(`<td></td>`);
-                    coluna.text(this.dadosFiltrados[i][propriedade]);
-                    linha.append(coluna);
-                }
-
-                corpo.append(linha);
-
-                linha.on("click", () => {
-                    this.linhaSelecionada = Number(linha.attr(Constantes.gerais.atributos.sequencia));
-                    Controlador.atualizarCamposFonte(this.parametros.campo.fonte.id, this.dadosFiltrados[this.linhaSelecionada]);
-                    this.fechar();
-                });
-            }
-        }
-        else {
-            cabecalho.append(`<th scope="col" style="text-align: center">Vazio</th>`);
-            corpo.append(`<tr><td style="text-align: center">Nenhum registro encontrado.</td></tr>`);
-        }
-    }
-
-    fecharTela() {
-        $("#telaDeBusca").addClass("d-none");
-    }
-
     fechar() {
-        this.fecharTela();
-        this.campoPesquisar.val("");
-
-        let selecionouLinha = true, valor;
+        super.fechar();
 
         if (this.linhaSelecionada === -1) {
-            selecionouLinha = false;
-            valor = null;
+            this.callbackFechamento();
         }
-        else {
-            valor = this.dadosFiltrados[this.linhaSelecionada][this.parametros.campo.campoFonte];
-        }
-
-        this.parametros.campo.notificarFimDePesquisa(selecionouLinha, valor);
-        this.linhaSelecionada = -1;
     }
 
     iniciarPesquisa() {

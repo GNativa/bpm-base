@@ -2,23 +2,19 @@ class TelaFactory {
     static telas = {};
 
     static obterTela(id, parametros) {
-        let tela = TelaFactory.telas[id];
-
-        if (!tela) {
+        if (!TelaFactory.telas[id]) {
             switch (id) {
-                case "busca": {
-                    tela = new TelaDeBusca(parametros);
+                case Constantes.telas.busca: {
+                    TelaFactory.telas[id] = new TelaDeBusca(parametros);
                     break;
                 }
                 default: {
-                    tela = new Tela(id, parametros);
+                    TelaFactory.telas[id] = new Tela(id, parametros);
                     break;
                 }
             }
-
-            TelaFactory.telas[id] = tela;
         }
 
-        return tela;
+        return TelaFactory.telas[id];
     }
 }

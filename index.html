@@ -24,46 +24,6 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-bs-theme="dark">
-    <div id="telaDeBusca" class="d-none tela"> <!-- d-none -->
-        <div class="fundo container-fluid">
-            <div class="superior">
-                <div class="row">
-                    <div class="col barra">
-                        <div id="tituloBusca" class="titulo-tela" style="width: 100%; justify-content: start"></div>
-                        <button type="button" id="fecharBusca" class="btn botao" title="Fechar">
-                            <i class="bi bi-x-square-fill"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-floating">
-                            <input type="text" id="buscaPesquisar" name="buscaPesquisar" class="form-control" placeholder="Pesquisar" style="color: var(--bs-body-color);">
-                            <label for="buscaPesquisar" style="color: var(--bs-body-color);">
-                                <i class="bi bi-info-circle-fill me-2 pe-auto informativo" data-bs-toggle="tooltip"
-                                   data-bs-placement="top" data-bs-title="Digite e pressione Enter para pesquisar."></i>Pesquisar
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="tabela">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                            <tr></tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <nav class="navbar">
         <div class="container-fluid">
             <div class="row">
@@ -108,6 +68,8 @@
     <script src="js/utilitarios/constantes.js"></script>
     <script src="js/utilitarios/utilitario.js"></script>
     <script src="js/utilitarios/mensagem.js"></script>
+    <script src="js/servicos/consultor.js"></script>
+    <script src="js/servicos/parametros.js"></script>
     <script src="js/campos/campo.js"></script>
     <script src="js/modulos/fonte.js"></script>
     <script src="js/campos/entrada.js"></script>
@@ -120,7 +82,6 @@
     <script src="js/telas/busca.js"></script>
     <script src="js/telas/factory.js"></script>
     <script src="js/modulos/secao.js"></script>
-    <script src="js/servicos/consultor.js"></script>
     <script src="js/modulos/validador.js"></script>
     <script src="js/modulos/formulario.js"></script>
     <script src="js/modulos/controlador.js"></script>

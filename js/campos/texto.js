@@ -1,5 +1,6 @@
 class CampoTexto extends CampoEntrada {
-    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, limitarValores, filtrarValorLimpo, altura, email, tratarConsulta) {
+    constructor(id, rotulo, largura, dica, fonte, campoFonte, campoResultante, limitarValores, filtrarValorLimpo,
+                altura, email, tratarConsulta) {
         super(id, rotulo, largura, dica, null, fonte, campoFonte);
         this.tag = altura ? "textarea" : "input";              // Tag do elemento HTML
         this.campoResultante = campoResultante ?? true;        // Indica se o campo é resultante ou mestre
@@ -42,11 +43,23 @@ class CampoTexto extends CampoEntrada {
     }
 
     configurarBusca(botao) {
-        const campo = this;
+        botao.on("click", async () => {
+            this.iniciarCarregamento();
 
-        botao.on("click", async function () {
-            campo.iniciarCarregamento();
-            const busca = TelaFactory.obterTela("busca", {campo: campo});
+            const busca = TelaFactory.obterTela(Constantes.telas.busca, {
+                campo: this,
+                naSelecao: (registro) => {
+                    Controlador.atualizarCamposFonte(this.fonte?.id ?? "", registro);
+                    this.valorAnterior = registro[this.campoFonte];
+                    this.pesquisarNovamente = false;
+                    this.finalizarCarregamento(false);
+                },
+                noFechamento: () => {
+                    this.valorAnterior = this.val();
+                    this.finalizarCarregamento(true);
+                }
+            });
+
             await busca.abrir();
         });
     }
@@ -93,7 +106,7 @@ class CampoTexto extends CampoEntrada {
 
             try {
                 if (this.pesquisarNovamente) {
-                    this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.obterToken(), this.fonte.filtros));
+                    this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.obterToken()));
                     // this.fonte.definirDados(Constantes.fontes.dadosTeste);
                     this.pesquisarNovamente = false;
                 }
@@ -117,6 +130,7 @@ class CampoTexto extends CampoEntrada {
 
                 // Filtrar dados com base no que foi digitado no campo
                 const dadosFiltrados = Utilitario.filtrarDados(dados, valor, dados[0], this.campoFonte);
+                console.log(dadosFiltrados);
 
                 if (dadosFiltrados.length === 1) {
                     Controlador.atualizarCamposFonte(this.fonte.id, dadosFiltrados[0]);
@@ -141,7 +155,7 @@ class CampoTexto extends CampoEntrada {
             }
             catch (e) {
                 Mensagem.exibir("Erro ao carregar dados",
-                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" (ID "${this.fonte.id}")`
+                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" (ID "${this.fonte.id}") `
                     + `para o campo "${this.rotulo}" (ID "${this.id}"): ${e}`,
                     "erro");
                 this.falharCarregamento();
@@ -197,11 +211,5 @@ class CampoTexto extends CampoEntrada {
         }
 
         bootstrap.Dropdown.getOrCreateInstance(this.campo).toggle();
-    }
-
-    notificarFimDePesquisa(selecionouLinha, valor) {
-        this.finalizarCarregamento(!selecionouLinha);
-        this.valorAnterior = valor ?? this.val();
-        this.pesquisarNovamente = false;
     }
 }
