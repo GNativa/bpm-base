@@ -30,53 +30,106 @@ const Formulario = (() => {
         "etapa1": [],
     };
 
+    const nomeFonteCnpj = "Consulta de pessoas jurídicas";
+
+    const fonteCnpj = new Fonte("cnpj", nomeFonteCnpj, null, null,
+        Constantes.fontes.tipos.api, {
+            "cnpj": "CNPJ",
+            "razaoSocial": "Razão social",
+            "nomeFantasia": "Nome fantasia",
+        },
+        null,
+        "https://publica.cnpj.ws/cnpj/",
+        new ParametrosConsulta({
+                method: "GET"
+            },
+            null, null,
+            function () {
+                const valor = campos["campo2"].val();
+
+                if (valor === "") {
+                    throw new ExcecaoMensagem(
+                        nomeFonteCnpj,
+                        `O campo "${campos["campo2"].rotulo}" não pode estar vazio para consultas.`,
+                        "aviso"
+                    );
+                }
+
+                return valor;
+            }
+        ),
+        function (retorno) {
+            if (!retorno[0]["status"]) {
+                return;
+            }
+
+            let status = retorno[0]["status"];
+            let titulo = nomeFonteCnpj, mensagem, tipoMensagem;
+
+            switch (status) {
+                case 400: {
+                    mensagem = "CNPJ inválido.";
+                    tipoMensagem = "aviso";
+                    break;
+                }
+                case 404: {
+                    mensagem = "CNPJ não encontrado.";
+                    tipoMensagem = "aviso";
+                    break;
+                }
+                case 500: {
+                    mensagem = retorno["detalhes"];
+                    tipoMensagem = "erro";
+                    break;
+                }
+                case 429: {
+                    // consultarSpeedio();
+                    //return;
+                    mensagem = retorno["detalhes"];
+                    tipoMensagem = "erro";
+                    break;
+                }
+                default: {
+                    mensagem = retorno["detalhes"];
+                    tipoMensagem = "erro";
+                    break;
+                }
+            }
+
+            console.log(retorno);
+            throw new ExcecaoMensagem(titulo, mensagem, tipoMensagem);
+        },
+        function (dados) {
+            let dadosCnpj = dados[0];
+            let registro = {};
+
+            registro["cnpj"] = dadosCnpj["estabelecimento"]["cnpj"];
+            registro["razaoSocial"] = dadosCnpj["razao_social"];
+            registro["nomeFantasia"] = dadosCnpj["estabelecimento"]["nome_fantasia"] ?? "";
+            registro["cep"] = dadosCnpj["estabelecimento"]["cep"];
+            registro["estado"] = dadosCnpj["estabelecimento"]["estado"]["sigla"];
+            registro["cidade"] = dadosCnpj["estabelecimento"]["cidade"]["nome"];
+            const tipoLogradouro = dadosCnpj["estabelecimento"]["tipo_logradouro"] ?? "";
+            registro["logradouro"] = (tipoLogradouro !== "" ? (tipoLogradouro + " ") : "") + dadosCnpj["estabelecimento"]["logradouro"];
+            registro["numero"] = dadosCnpj["estabelecimento"]["numero"];
+            registro["bairro"] = dadosCnpj["estabelecimento"]["bairro"];
+            registro["complemento"] = (dadosCnpj["estabelecimento"]["complemento"] ?? "").replace(/\s\s+/g, " ");
+            registro["email"] = dadosCnpj["estabelecimento"]["email"];
+            const ddd1 = dadosCnpj["estabelecimento"]["ddd1"] ?? "";
+            const telefone1 = dadosCnpj["estabelecimento"]["telefone1"] ?? "";
+            registro["telefone"] = ddd1 + telefone1;
+            const ddd2 = dadosCnpj["estabelecimento"]["ddd2"] ?? "";
+            const telefone2 = dadosCnpj["estabelecimento"]["telefone2"] ?? "";
+            registro["telefoneAdicional"] = ddd2 + telefone2;
+
+            return [registro];
+        },
+    );
+
     // Objeto com referências a fontes de dados
     const fontes = {
-        "cnpj": new Fonte("cnpj", "Consulta de pessoas jurídicas", null, null,
-            Constantes.fontes.tipos.api, {
-                "cnpj": "CNPJ",
-                "razaoSocial": "Razão social",
-                "nomeFantasia": "Nome fantasia",
-            },
-            null,
-            "https://publica.cnpj.ws/cnpj/",
-            new ParametrosConsulta({
-                    method: "GET"
-                },
-                null, null,
-                () => {
-                    return campos["campo2"].val();
-                }
-            ),
-            function (retorno) {
-
-            },
-            function (dados) {
-                let dadosCnpj = dados[0];
-                let registro = {};
-
-                registro["cnpj"] = dadosCnpj["estabelecimento"]["cnpj"];
-                registro["razaoSocial"] = dadosCnpj["razao_social"];
-                registro["nomeFantasia"] = dadosCnpj["estabelecimento"]["nome_fantasia"] ?? "";
-                registro["cep"] = dadosCnpj["estabelecimento"]["cep"];
-                registro["estado"] = dadosCnpj["estabelecimento"]["estado"]["sigla"];
-                registro["cidade"] = dadosCnpj["estabelecimento"]["cidade"]["nome"];
-                const tipoLogradouro = dadosCnpj["estabelecimento"]["tipo_logradouro"] ?? "";
-                registro["logradouro"] = (tipoLogradouro !== "" ? (tipoLogradouro + " ") : "") + dadosCnpj["estabelecimento"]["logradouro"];
-                registro["numero"] = dadosCnpj["estabelecimento"]["numero"];
-                registro["bairro"] = dadosCnpj["estabelecimento"]["bairro"];
-                registro["complemento"] = (dadosCnpj["estabelecimento"]["complemento"] ?? "").replace(/\s\s+/g, " ");
-                registro["email"] = dadosCnpj["estabelecimento"]["email"];
-                const ddd1 = dadosCnpj["estabelecimento"]["ddd1"] ?? "";
-                const telefone1 = dadosCnpj["estabelecimento"]["telefone1"] ?? "";
-                registro["telefone"] = ddd1 + telefone1;
-                const ddd2 = dadosCnpj["estabelecimento"]["ddd2"] ?? "";
-                const telefone2 = dadosCnpj["estabelecimento"]["telefone2"] ?? "";
-                registro["telefoneAdicional"] = ddd2 + telefone2;
-
-                return [registro];
-            },
-        ),
+        "cnpjDadosGerais": fonteCnpj,
+        "cnpjContasBancarias": Object.assign({}, fonteCnpj),
     };
 
     // obterValidacoes(): array<Validacao>
@@ -119,38 +172,12 @@ const Formulario = (() => {
     function definirEstadoInicial() {
     }
 
-    // configurarPlugins(): void
-    /*
-        Configura plugins que necessitam de inicialização na página.
-     */
-    function configurarPlugins() {
-        const tooltipTriggerList =
-            document.querySelectorAll(`[data-bs-toggle="tooltip"]`);
-        const tooltipList = [...tooltipTriggerList].map(
-            tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
-        );
-    }
-
     // configurarEventos(): void
     /*
         Configura eventos em elementos diversos.
      */
     function configurarEventos() {
         // A implementar.
-    }
-
-    // listarCampos(): void
-    /*
-        Obtém os IDs dos campos na variável campos{} e os lista no console.
-     */
-    function listarCampos() {
-        const props = [];
-
-        for (const prop in campos) {
-            props.push(`"${prop}"`);
-        }
-
-        console.log(props.join(", "));
     }
 
     // gerar(): void
@@ -163,16 +190,16 @@ const Formulario = (() => {
                 "campo1", "Campo 1", 2, "Esta é uma caixa de seleção.",
             ),
             new CampoTexto(
-                "campo2", "CNPJ", 4, null, fontes["cnpj"], "cnpj",
+                "campo2", "CNPJ", 4, null, fontes["cnpjDadosGerais"], "cnpj",
                 false, false, false
             ),
             new CampoTexto(
-                "campo3", "Razão social", 4, null, fontes["cnpj"], "razaoSocial",
+                "campo3", "Razão social", 4, null, fontes["cnpjDadosGerais"], "razaoSocial",
                 true, false,
             ),
             new CampoTexto(
                 "campo4", "Nome fantasia", 2, "As dicas não são obrigatórias.",
-                fontes["cnpj"], "nomeFantasia", true, true, null, 5
+                fontes["cnpjDadosGerais"], "nomeFantasia", true, true, null, 5
             ),
             new CampoAnexo(
                 "campo5", "Campo 5", 6, "Dica", true,
@@ -214,11 +241,9 @@ const Formulario = (() => {
         camposBloqueados,
         camposOcultos,
         fontes,
-        listarCampos,
         carregarDados,
         salvarDados,
         obterValidacoes,
-        configurarPlugins,
         definirEstadoInicial,
         configurarEventos,
         gerar

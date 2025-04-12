@@ -23,6 +23,7 @@ class Fonte {
     }
 
     definirDados(dados) {
+        this.tratarRetorno(dados);
         this.dados = this.formatarDados(dados);
     }
 

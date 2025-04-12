@@ -5,10 +5,14 @@
 
 const Controlador = (() => {
     // Variáveis para uso na geração e validação do formulário.
-    let validador = new Validador(); // Validador
-    let etapa = null;                    // Etapa atual do processo
-    let inicializado = false;         // Indica se o formulário foi inicializado
-    let accessToken = null;              // Access token da plataforma
+    // Validador dos campos
+    let validador = new Validador();
+    // Etapa atual do processo BPM
+    let etapa = null;
+    // Indica se o formulário foi inicializado
+    let inicializado = false;
+    // Access token da plataforma
+    let accessToken = null;
 
     // Interface da API do workflow (BPM) que lida com a inicialização, salvamento de dados e erros do formulário.
     // Função "_rollback" não implementada até o momento
@@ -108,7 +112,7 @@ const Controlador = (() => {
 
     // inicializar(): void
     /*
-        Inicializa o formulário, podendo ser através da API ou localmente.
+        Inicializa o formulário, podendo ser através da API workflow do Senior X ou localmente.
      */
     function inicializar() {
         if (inicializado) {
@@ -118,15 +122,29 @@ const Controlador = (() => {
         configurarElementosFixos();
 
         Formulario.gerar();
-        // Formulario.listarCampos();
-        Formulario.configurarPlugins();
         Formulario.configurarEventos();
         Formulario.definirEstadoInicial();
 
+        // listarCampos();
+        configurarPlugins();
         configurarAnimacoes();
         configurarEtapas();
         aplicarValidacoes(Formulario.obterValidacoes());
         inicializado = true;
+    }
+
+    // listarCampos(): void
+    /*
+        Obtém os IDs dos campos na variável campos{} e os lista no console.
+     */
+    function listarCampos() {
+        const props = [];
+
+        for (const prop in Formulario.campos) {
+            props.push(`"${prop}"`);
+        }
+
+        console.log(props.join(", "));
     }
 
     // carregarFontes(dadosPlataforma: {}): void
@@ -172,6 +190,18 @@ const Controlador = (() => {
         else {
             campos.val("");
         }
+    }
+
+    // configurarPlugins(): void
+    /*
+        Configura plugins que necessitam de inicialização na página.
+     */
+    function configurarPlugins() {
+        const tooltipTriggerList =
+            document.querySelectorAll(`[data-bs-toggle="tooltip"]`);
+        const tooltipList = [...tooltipTriggerList].map(
+            tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+        );
     }
 
     function configurarAnimacoes() {

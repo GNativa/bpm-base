@@ -27,7 +27,9 @@ class CampoTexto extends CampoEntrada {
         }
 
         this.mascaraPadrao = "";
-        this.opcoesMascara = {clearIfNotMatch: true};
+        this.opcoesMascara = {
+            clearIfNotMatch: true
+        };
 
         this.inicializar();
     }
@@ -98,7 +100,10 @@ class CampoTexto extends CampoEntrada {
                 return;
             }
 
-            if (event.target.value === this.valorAnterior) {
+            // Não realizar carregamento quando o valor do campo for igual ao anterior
+            // ou o botão de busca for clicado
+            if (event.target.value === this.valorAnterior
+             || event.relatedTarget.id === `${Constantes.campos.prefixoIdBotaoPesquisa}${this.id}`) {
                 return;
             }
 
@@ -130,7 +135,6 @@ class CampoTexto extends CampoEntrada {
 
                 // Filtrar dados com base no que foi digitado no campo
                 const dadosFiltrados = Utilitario.filtrarDados(dados, valor, dados[0], this.campoFonte);
-                console.log(dadosFiltrados);
 
                 if (dadosFiltrados.length === 1) {
                     Controlador.atualizarCamposFonte(this.fonte.id, dadosFiltrados[0]);
@@ -154,10 +158,16 @@ class CampoTexto extends CampoEntrada {
                 this.valorAnterior = event.target.value;
             }
             catch (e) {
-                Mensagem.exibir("Erro ao carregar dados",
-                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" (ID "${this.fonte.id}") `
-                    + `para o campo "${this.rotulo}" (ID "${this.id}"): ${e}`,
-                    "erro");
+                if (e instanceof ExcecaoMensagem) {
+                    Mensagem.exibir(e.titulo, e.message, e.tipoMensagem);
+                }
+                else {
+                    Mensagem.exibir("Erro ao carregar dados",
+                        `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" (ID "${this.fonte.id}") `
+                        + `para o campo "${this.rotulo}" (ID "${this.id}"): ${e}`,
+                        "erro");
+                }
+
                 this.falharCarregamento();
             }
         }

@@ -64,8 +64,13 @@ class Consultor {
             let urlConsulta = fonte.urlBase;
             const parametrosUrl = fonte.parametros.url;
 
-            if (fonte.parametros.obterUrlDinamica !== null) {
-                urlConsulta += fonte.parametros.obterUrlDinamica();
+            if (fonte.parametros.obterSufixoUrl !== null) {
+                try {
+                    urlConsulta += fonte.parametros.obterSufixoUrl();
+                }
+                catch (e) {
+                    throw e;
+                }
             }
             else {
                 for (const parametro of parametrosUrl) {
@@ -101,9 +106,7 @@ class Consultor {
             const resposta = await fetch(urlConsulta, init);
             const json = await resposta.json();
 
-            if (typeof json === "object") {
-                return [json];
-            }
+            return [json];
         }
 
         return [{}];

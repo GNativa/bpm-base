@@ -84,10 +84,16 @@ class TelaDeBusca extends Tela {
             this.dadosFiltrados = this.fonte.dados;
         }
         catch (e) {
-            Mensagem.exibir("Erro ao carregar dados",
-                `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" `
-                + `para a tela de busca: ${e}`,
-                "erro");
+            if (e instanceof ExcecaoMensagem) {
+                Mensagem.exibir(e.titulo, e.message, e.tipoMensagem);
+            }
+            else {
+                Mensagem.exibir("Erro ao carregar dados",
+                    `Houve um erro ao carregar os dados da fonte "${this.fonte.nome}" `
+                    + `para a tela de busca: ${e}`,
+                    "erro");
+            }
+
             this.dadosFiltrados = [];
             this.falharPesquisa();
         }

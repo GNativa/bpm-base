@@ -1,8 +1,8 @@
 class ParametrosConsulta {
-    constructor(requisicao, corpo, url, obterUrlDinamica) {
+    constructor(requisicao, corpo, url, obterSufixoUrl) {
         this.requisicao = requisicao ?? {};
         this.corpo = corpo ?? {};
         this.url = url ?? [];
-        this.obterUrlDinamica = obterUrlDinamica ?? null;
+        this.obterSufixoUrl = obterSufixoUrl ?? null;
     }
 }
