@@ -83,7 +83,7 @@ const Formulario = (() => {
                     break;
                 }
                 case 429: {
-                    // consultarSpeedio();
+                    //consultarSpeedio();
                     //return;
                     mensagem = retorno["detalhes"];
                     tipoMensagem = "erro";
