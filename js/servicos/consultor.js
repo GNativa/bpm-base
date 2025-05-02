@@ -1,5 +1,9 @@
 class Consultor {
     static async carregarFonte(fonte, token) {
+        if (!fonte.realizarConsulta()) {
+            return;
+        }
+
         if (fonte.tipo === Constantes.fontes.tipos.tabela) {
             if (!token) {
                 throw new Error("Os dados não puderam ser carregados. Tente novamente mais tarde.");

@@ -1,5 +1,5 @@
 class Fonte {
-    constructor(id, nome, campoChave, campoValor, tipo, descricoes, filtros, urlBase, parametros,
+    constructor(id, nome, campoChave, campoValor, tipo, descricoes, realizarConsulta, filtros, urlBase, parametros,
                 tratarRetorno, formatarDados) {
         this.id = id;                         // Código de identificação da fonte no formulário
         this.nome = nome;                     // Nome de exibição e consulta nas APIs da plataforma
@@ -8,6 +8,10 @@ class Fonte {
         this.dados = [];                      // Lista de registros obtidos por consulta
         this.tipo = tipo;                     // Tipo da fonte de dados com relação à origem dos dados (API, tabela, etc.)
         this.descricoes = descricoes ?? {};   // Correspondência dos nomes dos campos às suas descrições
+        this.realizarConsulta = realizarConsulta ??
+            function() {
+                return true;
+            };
         this.filtros = filtros ?? [];         // Lista de filtros a serem aplicados na consulta das APIs da plataforma
         this.urlBase = urlBase ?? "";         // URL base para consulta por API
         this.parametros = parametros ??       // Parâmetros para consulta por API
