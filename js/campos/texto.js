@@ -50,6 +50,7 @@ class CampoTexto extends CampoEntrada {
 
             const busca = TelaFactory.obterTela(Constantes.telas.busca, {
                 campo: this,
+                aceitarValorVazio: false,
                 naSelecao: (registro) => {
                     Controlador.atualizarCamposFonte(this.fonte?.id ?? "", registro);
                     this.valorAnterior = registro[this.campoFonte];

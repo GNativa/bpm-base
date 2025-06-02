@@ -63,8 +63,11 @@ class Consultor {
 
             return JSON.parse(json["data"].replace("\\", ""))["value"];
         }
+        else if (fonte.tipo === Constantes.fontes.tipos.api) {
+            if (!fonte.realizarConsulta()) {
+                return [{}];
+            }
 
-        if (fonte.tipo === Constantes.fontes.tipos.api) {
             let urlConsulta = fonte.urlBase;
             const parametrosUrl = fonte.parametros.url;
 

@@ -18,7 +18,7 @@ const Formulario = (() => {
     };
 
     const camposObrigatorios = {                       // Listas dos IDs dos campos obrigatórios por etapa
-        "etapa1": ["campo2", "campo3"],
+        "etapa1": [],
     };
 
     const camposBloqueados = {                         // Listas dos IDs dos campos bloqueados por etapa
@@ -36,6 +36,16 @@ const Formulario = (() => {
             "cnpj": "CNPJ",
             "razaoSocial": "Razão social",
             "nomeFantasia": "Nome fantasia",
+            "cep": "CEP",
+            "estado": "Estado",
+            "cidade": "Cidade",
+            "logradouro": "Logradouro",
+            "numero": "Número",
+            "bairro": "Bairro",
+            "complemento": "Complemento",
+            "emailContato": "E-mail para contato",
+            "telefone": "Telefone",
+            "contatoAdicional": "Contato adicional",
         },
         () => {
             const valor = campos["documento"].val();
@@ -62,7 +72,7 @@ const Formulario = (() => {
             }
         ),
         function (retorno) {
-            if (!retorno[0]["status"]) {
+            if (!retorno || retorno.length === 0 || !retorno[0]["status"]) {
                 return;
             }
 
@@ -99,10 +109,13 @@ const Formulario = (() => {
                 }
             }
 
-            console.log(retorno);
             throw new ExcecaoMensagem(titulo, mensagem, tipoMensagem);
         },
         function (dados) {
+            if (!dados || dados.length === 0) {
+                return [{}];
+            }
+
             let dadosCnpj = dados[0];
             let registro = {};
 
@@ -117,13 +130,13 @@ const Formulario = (() => {
             registro["numero"] = dadosCnpj["estabelecimento"]["numero"];
             registro["bairro"] = dadosCnpj["estabelecimento"]["bairro"];
             registro["complemento"] = (dadosCnpj["estabelecimento"]["complemento"] ?? "").replace(/\s\s+/g, " ");
-            registro["email"] = dadosCnpj["estabelecimento"]["email"];
+            registro["emailContato"] = dadosCnpj["estabelecimento"]["email"];
             const ddd1 = dadosCnpj["estabelecimento"]["ddd1"] ?? "";
             const telefone1 = dadosCnpj["estabelecimento"]["telefone1"] ?? "";
             registro["telefone"] = ddd1 + telefone1;
             const ddd2 = dadosCnpj["estabelecimento"]["ddd2"] ?? "";
             const telefone2 = dadosCnpj["estabelecimento"]["telefone2"] ?? "";
-            registro["telefoneAdicional"] = ddd2 + telefone2;
+            registro["contatoAdicional"] = ddd2 + telefone2;
 
             return [registro];
         },
@@ -360,8 +373,8 @@ const Formulario = (() => {
                 true, false,
             ),
             new CampoTexto(
-                "nomeFantasia", "Nome fantasia", 2, "As dicas não são obrigatórias.",
-                fontes["cnpjDadosGerais"], "nomeFantasia", true, true, null, 5
+                "nomeFantasia", "Nome fantasia", 4, "As dicas não são obrigatórias.",
+                fontes["cnpjDadosGerais"], "nomeFantasia", true, true,
             ),
             new CampoCheckbox("mercadoExterior", "Mercado exterior", 2),
             new CampoCheckbox("fornecedorIndustria", "É indústria", 2),
@@ -389,7 +402,7 @@ const Formulario = (() => {
             new CampoTexto(
                 "cep", "CEP", 2,
                 "Pressione TAB ou selecione outro campo para efetuar uma consulta com o CEP informado",
-                fontes["cnpj"], "cep", true,
+                fontes["cnpjDadosGerais"], "cep", true, false
             ),
             new CampoLista("pais", "País", 2,
                null, fontes["pais"], "pais", true,)
@@ -634,21 +647,29 @@ const Formulario = (() => {
                     new OpcaoLista("8907", "8907 - Zâmbia"),
                     new OpcaoLista("8958", "8958 - Zona Canal Panamá"),
                 ]),
-            new CampoLista("estado", "Estado", 2)
+            new CampoLista("estado", "Estado", 2,
+             null, fontes["cnpjDadosGerais"], "estado")
                 .adicionarOpcoes(listaEstados),
-            new CampoTexto("cidade", "Cidade", 4),
-            new CampoTexto("logradouro", "Logradouro", 4),
-            new CampoTexto("numero", "Número", 2),
-            new CampoTexto("bairro", "Bairro", 4),
-            new CampoTexto("complemento", "Complemento", 4),
+            new CampoTexto("cidade", "Cidade", 4, null, fontes["cnpjDadosGerais"], "cidade",
+                true, false),
+            new CampoTexto("logradouro", "Logradouro", 4, null, fontes["cnpjDadosGerais"],
+                "logradouro", true, false),
+            new CampoTexto("numero", "Número", 2, null, fontes["cnpjDadosGerais"],
+                "numero", true, false),
+            new CampoTexto("bairro", "Bairro", 4, null, fontes["cnpjDadosGerais"],
+                "bairro", true, false),
+            new CampoTexto("complemento", "Complemento", 4, null, fontes["cnpjDadosGerais"],
+                "complemento", true, false),
             new CampoTexto("enderecoCorresp", "Endereço de correspondência", 4),
             new CampoTexto("nomeContato", "Nome do contato", 4),
-            new CampoTexto("emailContato", "E-mail para contato", 4, null, null,
-                null, null, null, null, null, true),
+            new CampoTexto("emailContato", "E-mail para contato", 4, null, fontes["cnpjDadosGerais"],
+                "emailContato", true, false, null, null, true),
             new CampoTexto("emailAdicional", "E-mail adicional", 4, null, null,
                 null, null, null, null, null, true),
-            new CampoTexto("telefone", "Telefone", 2),
-            new CampoTexto("celular", "Celular", 2),
+            new CampoTexto("telefone", "Telefone", 2, null, fontes["cnpjDadosGerais"],
+                "telefone", true, false),
+            new CampoTexto("celular", "Celular", 2, null, fontes["cnpjDadosGerais"],
+                "celular", true, false),
             new CampoTexto("contatoAdicional", "Telefone ou celular adicional", 2),
             new CampoLista("formaPagamento", "Forma de pagamento", 2)
                 .adicionarOpcoes([
@@ -732,7 +753,9 @@ const Formulario = (() => {
         secaoControle = new Secao("controle", "Controle", camposControle);
 
         // TODO: melhorar isso para definir os campos mestre de forma modular
-        const camposFonteDocumento = ["razaoSocial", "nomeFantasia"];
+        const camposFonteDocumento = ["razaoSocial", "nomeFantasia", "cep", "estado", "cidade", "logradouro",
+            "numero", "bairro", "complemento", "emailContato", "telefone", "contatoAdicional"];
+
         for (const id of camposFonteDocumento) {
             campos[id].definirCampoMestre(campos["documento"]);
         }

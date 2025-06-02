@@ -9,6 +9,7 @@
 }
 
 :root, [data-bs-theme=light] {
+    --cor-base: #3f4150;
     --cor-base-dev: #003B6CFF;
     --cor-base-contraste: color-mix(in oklab, var(--cor-base) 40%, #ffffff 60%);
     --cor-texto-pouco-contraste: color-mix(in oklab, var(--cor-base-contraste), #505050);
@@ -23,6 +24,7 @@
 }
 
 [data-bs-theme=dark] {
+    --cor-base: #c9cad0;
     --cor-base-dev: #369aec;
     --cor-base-contraste: color-mix(in oklab, var(--cor-base) 40%, #424242 60%);
     --cor-texto-pouco-contraste: color-mix(in oklab, var(--cor-base-contraste), #676767);
@@ -83,7 +85,7 @@ input[type="file"]::file-selector-button {
 }
 
 .form-check label {
-    color: var(--cor-texto-desabilitado);
+    color: var(--cor-texto);
 }
 
 select[disabled] {
@@ -119,7 +121,7 @@ body, .form-select, input[type="file"] {
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
 .form-floating > .form-select ~ label {
-    color: var(--cor-texto-desabilitado);
+    color: var(--cor-texto);
 }
 
 .informativo:hover {
@@ -191,8 +193,8 @@ select[required], input[type="file"][required] {
 .titulo-tela {
     font-size: 1.25em;
     font-weight: bold;
-    // color: var(--cor-texto-contraste);
-    color: var(--bs-body-color);
+    color: var(--cor-texto-contraste);
+    //color: var(--bs-body-color);
 }
 
 .texto-mensagem {

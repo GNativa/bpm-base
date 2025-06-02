@@ -1,6 +1,8 @@
 class TelaDeBusca extends Tela {
     constructor(parametros) {
         super(Constantes.telas.busca, parametros);
+        this.aceitarValorVazio =
+            parametros.aceitarValorVazio ?? true;         // Indica se a busca aceita valores vazios no campo base
         this.callbackSelecionado = parametros.naSelecao   // Função para chamar na seleção da linha
             ?? ((registro) => {});
         this.callbackFechamento = parametros.noFechamento // Função para chamar no fechamento sem seleção
@@ -72,15 +74,30 @@ class TelaDeBusca extends Tela {
     }
 
     async carregarDados() {
-        if (!this.fonte) return;
+        if (!this.fonte) {
+            return;
+        }
 
         const token = Controlador.obterToken();
 
         try {
-            const dados = await Consultor.carregarFonte(this.fonte, token);
+            let dados;
+
+            if (!this.aceitarValorVazio && this.parametros.campo?.val() === "") {
+                Mensagem.exibir(
+                    "Consulta inválida",
+                    "Digite um valor no campo principal antes de abrir a tela de busca.",
+                    "aviso"
+                );
+
+                dados = [{}];
+                this.dadosFiltrados = dados;
+                return;
+            }
+
+            dados = await Consultor.carregarFonte(this.fonte, token);
             this.fonte.tratarRetorno(dados);
             this.fonte.definirDados(dados);
-            // this.fonte.dados = [{"cnpj": "02476501000174"}];
             this.dadosFiltrados = this.fonte.dados;
         }
         catch (e) {

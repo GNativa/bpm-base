@@ -293,7 +293,13 @@ class Campo {
     }
 
     cleanVal() {
-        return this.campo.cleanVal();
+        const valorLimpo = this.campo.cleanVal();
+
+        if (valorLimpo === undefined) {
+            return this.campo.val();
+        }
+
+        return valorLimpo;
     }
 
     on(evento, funcao) {
