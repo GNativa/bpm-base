@@ -65,7 +65,7 @@ class Consultor {
         }
         else if (fonte.tipo === Constantes.fontes.tipos.api) {
             if (!fonte.realizarConsulta()) {
-                return [{}];
+                return [];
             }
 
             let urlConsulta = fonte.urlBase;
@@ -116,6 +116,6 @@ class Consultor {
             return [json];
         }
 
-        return [{}];
+        return [];
     }
 }

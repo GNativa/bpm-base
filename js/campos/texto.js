@@ -120,7 +120,7 @@ class CampoTexto extends CampoEntrada {
                 const dados = this.fonte.dados;
 
                 if (dados.length === 0) {
-                    this.falharCarregamento();
+                    this.finalizarCarregamento(true);
                     this.pesquisarNovamente = true;
                     return;
                 }

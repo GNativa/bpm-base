@@ -90,7 +90,7 @@ class TelaDeBusca extends Tela {
                     "aviso"
                 );
 
-                dados = [{}];
+                dados = [];
                 this.dadosFiltrados = dados;
                 return;
             }

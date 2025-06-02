@@ -113,7 +113,7 @@ const Formulario = (() => {
         },
         function (dados) {
             if (!dados || dados.length === 0) {
-                return [{}];
+                return [];
             }
 
             let dadosCnpj = dados[0];
