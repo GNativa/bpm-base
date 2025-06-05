@@ -72,12 +72,13 @@ const Formulario = (() => {
             }
         ),
         function (retorno) {
-            if (!retorno || retorno.length === 0 || !retorno[0]["status"]) {
+            if (!retorno || retorno.length === 0 || !retorno["status"]) {
                 return;
             }
 
-            let status = retorno[0]["status"];
-            let titulo = nomeFonteCnpj, mensagem, tipoMensagem;
+            let status = retorno["status"];
+            let titulo = nomeFonteCnpj;
+            let mensagem, tipoMensagem;
 
             switch (status) {
                 case 400: {
@@ -90,14 +91,14 @@ const Formulario = (() => {
                     tipoMensagem = "aviso";
                     break;
                 }
-                case 500: {
+                case 429: {
+                    //consultarSpeedio();
+                    //return;
                     mensagem = retorno["detalhes"];
                     tipoMensagem = "erro";
                     break;
                 }
-                case 429: {
-                    //consultarSpeedio();
-                    //return;
+                case 500: {
                     mensagem = retorno["detalhes"];
                     tipoMensagem = "erro";
                     break;

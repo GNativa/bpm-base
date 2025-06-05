@@ -46,6 +46,10 @@ class CampoTexto extends CampoEntrada {
 
     configurarBusca(botao) {
         botao.on("click", async () => {
+            if (this.val() === this.valorAnterior) {
+                return;
+            }
+
             this.iniciarCarregamento();
 
             const busca = TelaFactory.obterTela(Constantes.telas.busca, {
@@ -103,6 +107,7 @@ class CampoTexto extends CampoEntrada {
 
             // Não realizar carregamento quando o valor do campo for igual ao anterior
             // ou o botão de busca for clicado
+
             if (event.target.value === this.valorAnterior
              || event.relatedTarget?.id === `${Constantes.campos.prefixoIdBotaoPesquisa}${this.id}`) {
                 return;
