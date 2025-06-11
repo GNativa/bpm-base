@@ -25,10 +25,14 @@ class ListaObjetos extends Secao {
             botaoRemover.prop("disabled", true);
         }
 
+        const hr = $("<hr>");
+
         if (indiceUltimaLinha === 0) {
             botaoRemover.prop("disabled", true);
+            hr.addClass("border-2");
         }
-        else if (indiceUltimaLinha > 0) {
+        else {
+            hr.addClass("border-1");
             linhaItem.addClass("mt-1");
         }
 
@@ -53,6 +57,7 @@ class ListaObjetos extends Secao {
         }
 
         this.divSecao.append(linhaItem);
+        linhaItem.before(hr);
         this.camposLista.push(camposDaLinha);
     }
 
@@ -80,8 +85,6 @@ class ListaObjetos extends Secao {
         const tituloSecao = $(`<div class="titulo-m"></div>`);
         tituloSecao.text(this.titulo);
 
-        const hr = $("<hr>");
-
         // colunaSuperior.append(linhaTitulo);
         linhaTitulo.append(colunaTitulo);
 
@@ -105,6 +108,6 @@ class ListaObjetos extends Secao {
         colunaTitulo.append(tituloSecao);
         // elementoSecao.append(colunaSuperior);
         elementoSecao.append(linhaTitulo);
-        elementoSecao.append(hr);
+        // elementoSecao.append(hr);
     }
 }
