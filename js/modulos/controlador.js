@@ -288,6 +288,17 @@ const Controlador = (() => {
         $("#botaoEnviar").on("click", function () {
             validarFormulario();
         });
+
+        // Configurar esquema de cores com base nas preferências do usuário
+        const mql = window.matchMedia('prefers-color-scheme: dark');
+        mql.addEventListener("change", (e) => {
+            if (e.matches) {
+                $("body").attr("data-bs-theme", "dark");
+            }
+            else {
+                $("body").attr("data-bs-theme", "light");
+            }
+        });
     }
 
     // aplicarValidacoes(validacoes: array<Validacao>): void

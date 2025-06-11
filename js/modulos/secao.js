@@ -12,7 +12,6 @@ class Secao {
         this.elemento = $();
         this.divSecao = $("<div></div>");
         this.campos = campos ?? [];
-        this.gerar();
     }
 
     configurarTitulo(elementoSecao) {
@@ -50,10 +49,9 @@ class Secao {
 
     gerar() {
         const gerada = this.gerada;
-        const campos = this.campos;
         const secao = this.divSecao;
 
-        if (gerada || campos.length === 0) {
+        if (gerada) {
             return null;
         }
 
@@ -66,9 +64,6 @@ class Secao {
         if (possuiTitulo) {
             this.configurarTitulo(secao);
         }
-
-        const linhaCampos = $("<div></div>");
-        linhaCampos.addClass("row g-3");
 
         this.adicionarLinha();
         const elemento = $(secao);

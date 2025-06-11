@@ -3,7 +3,7 @@
     - Representação abstrata de um campo no formulário.
  */
 class Campo {
-    constructor(id, rotulo, largura, dica, tag, tipo, fonte, campoFonte, listaObjetos) {
+    constructor(id, rotulo, largura, dica, tag, tipo, fonte, campoFonte) {
         this.id = id;                            // Atributo "id" do elemento HTML
         this.rotulo = rotulo;                    // Atributo "title" do elemento HTML
         this.largura = largura;                  // Largura do campo (respeitando classes .col-*)
@@ -15,6 +15,8 @@ class Campo {
         this.tag = tag;                          // Tag do elemento HTML
         this.tipo = tipo;                        // Atributo "type" do elemento HTML, caso seja um input
         this.classes = ["campo"];                // Classes CSS do campo
+
+        this.listaDeObjetos = null;
 
         this.obrigatorio = false;                // Indica se o campo é obrigatório
         this.visivel = true;                     // Indica se o campo está visível
@@ -60,6 +62,8 @@ class Campo {
 
         this.campo = $(`<${tag} id="${id}" name="${id}" placeholder="${rotulo}" title="${rotulo}"></${tag}>`);
         this.label = $("<label></label>");
+
+        this.campo.attr("data-id-unico", id);
 
         if (dica !== null) {
             const icone = $(`
@@ -148,6 +152,10 @@ class Campo {
         }
 
         return this;
+    }
+
+    definirListaDeObjetos(listaDeObjetos) {
+        this.listaDeObjetos = listaDeObjetos;
     }
 
     sobrescreverObrigatoriedade(sobrescrever) {
