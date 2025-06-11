@@ -290,6 +290,8 @@ const Controlador = (() => {
         });
 
         // Configurar esquema de cores com base nas preferências do usuário
+        // Temporariamente desabilitado, pois o Senior X fica sempre em modo claro
+        /*
         const mql = window.matchMedia("(prefers-color-scheme: dark)");
         const eventoMediaQueryList = (e) => {
             if (e.matches) {
@@ -304,6 +306,7 @@ const Controlador = (() => {
 
         eventoMediaQueryList(mql);
         mql.addEventListener("change", eventoMediaQueryList);
+         */
     }
 
     // aplicarValidacoes(validacoes: array<Validacao>): void
