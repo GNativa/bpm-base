@@ -290,15 +290,20 @@ const Controlador = (() => {
         });
 
         // Configurar esquema de cores com base nas preferências do usuário
-        const mql = window.matchMedia('prefers-color-scheme: dark');
-        mql.addEventListener("change", (e) => {
+        const mql = window.matchMedia("(prefers-color-scheme: dark)");
+        const eventoMediaQueryList = (e) => {
             if (e.matches) {
                 $("body").attr("data-bs-theme", "dark");
+                console.log("DARK");
             }
             else {
                 $("body").attr("data-bs-theme", "light");
+                console.log("LIGHT");
             }
-        });
+        };
+
+        eventoMediaQueryList(mql);
+        mql.addEventListener("change", eventoMediaQueryList);
     }
 
     // aplicarValidacoes(validacoes: array<Validacao>): void

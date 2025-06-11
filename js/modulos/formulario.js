@@ -315,6 +315,7 @@ const Formulario = (() => {
 
         salvarCampos(camposAprovacao);
         secaoAprovacao = new Secao("aprovacao", "Aprovação", camposAprovacao);
+        secaoAprovacao.gerar();
 
         const listaEstados = [
             new OpcaoLista("AC", "AC - Acre"),
@@ -687,6 +688,7 @@ const Formulario = (() => {
 
         salvarCampos(camposDadosPrincipais);
         secaoDadosPrincipais = new Secao("dadosPrincipais", "Dados principais", camposDadosPrincipais);
+        secaoDadosPrincipais.gerar();
 
         const camposContaBancaria = [
             new CampoLista("banco", "Banco", 4),
@@ -723,6 +725,7 @@ const Formulario = (() => {
 
         salvarCampos(camposContaBancaria);
         secaoContaBancaria = new Secao("contaBancaria", "Conta bancária", camposContaBancaria);
+        secaoContaBancaria.gerar();
 
         const camposDetalhesDocumentos = [
             new CampoTexto("observacoes", "Observações", 12, null, null,
@@ -738,6 +741,7 @@ const Formulario = (() => {
 
         salvarCampos(camposDetalhesDocumentos);
         secaoDetalhesDocumentos = new Secao("detalhesDocumentos", "Detalhes e documentos", camposDetalhesDocumentos);
+        secaoDetalhesDocumentos.gerar();
 
         const camposControle = [
             new CampoTexto(
@@ -752,6 +756,7 @@ const Formulario = (() => {
 
         salvarCampos(camposControle);
         secaoControle = new Secao("controle", "Controle", camposControle);
+        secaoControle.gerar();
 
         // TODO: melhorar isso para definir os campos mestre de forma modular
         const camposFonteDocumento = ["razaoSocial", "nomeFantasia", "cep", "estado", "cidade", "logradouro",
