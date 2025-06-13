@@ -1,6 +1,6 @@
 /*
     > Formulário
-        - Mantém o estado do formulário, realizando carregamento e salvamento de dados, validações etc.
+        - Mantém o estado do formulário, realizando carregamento e salvamento de dados, validações, etc.
  */
 
 const Formulario = (() => {
@@ -313,7 +313,6 @@ const Formulario = (() => {
             ),
         ];
 
-        salvarCampos(camposAprovacao);
         secaoAprovacao = new Secao("aprovacao", "Aprovação", camposAprovacao);
         secaoAprovacao.gerar();
 
@@ -686,7 +685,6 @@ const Formulario = (() => {
                 ]),
         ];
 
-        salvarCampos(camposDadosPrincipais);
         secaoDadosPrincipais = new Secao("dadosPrincipais", "Dados principais", camposDadosPrincipais);
         secaoDadosPrincipais.gerar();
 
@@ -723,7 +721,6 @@ const Formulario = (() => {
             new CampoTexto("favTelefone", "Telefone ou celular", 2),
         ];
 
-        salvarCampos(camposContaBancaria);
         secaoContaBancaria = new Secao("contaBancaria", "Conta bancária", camposContaBancaria);
         secaoContaBancaria.gerar();
 
@@ -739,7 +736,6 @@ const Formulario = (() => {
             new CampoAnexo("comprovanteContaBancaria", "Comprovante de conta bancária", 4),
         ];
 
-        salvarCampos(camposDetalhesDocumentos);
         secaoDetalhesDocumentos = new Secao("detalhesDocumentos", "Detalhes e documentos", camposDetalhesDocumentos);
         secaoDetalhesDocumentos.gerar();
 
@@ -754,7 +750,6 @@ const Formulario = (() => {
             ),
         ];
 
-        salvarCampos(camposControle);
         secaoControle = new Secao("controle", "Controle", camposControle);
         secaoControle.gerar();
 

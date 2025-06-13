@@ -5,8 +5,10 @@
 
 const Controlador = (() => {
     // Variáveis para uso na geração e validação do formulário.
+    // TODO: Injetar dependências pelo construtor
     // Validador dos campos
     let validador = new Validador();
+    let colecao = new ColecaoCampos();
     // Etapa atual do processo BPM
     let etapa = null;
     // Indica se o formulário foi inicializado
@@ -76,14 +78,12 @@ const Controlador = (() => {
                     Formulario.carregarDados(mapa);
 
                     // Disparar eventos dos campos para ativar validações
-                    for (const campo in Formulario.campos) {
-                        Formulario.campos[campo].campo.trigger("change");
-                    }
+                    notificarCampos();
                 }
             })
             .catch(function (error) {
                 const mensagem = `Houve um erro ao inicializar o formulário: ${error}. `
-                      + `Por gentileza, abra a solicitação novamente para prosseguir.`;
+                    + `Por gentileza, abra a solicitação novamente para prosseguir.`;
                 Mensagem.exibir("Erro na inicialização do formulário",
                     mensagem,
                     "erro");
@@ -125,26 +125,35 @@ const Controlador = (() => {
         Formulario.configurarEventos();
         Formulario.definirEstadoInicial();
 
+        const colecao = new ColecaoCampos();
+
         // listarCampos();
         configurarPlugins();
         configurarAnimacoes();
-        configurarEtapas();
+        configurarEtapas(colecao);
         aplicarValidacoes(Formulario.obterValidacoes());
         inicializado = true;
+    }
+
+    function notificarCampos() {
+        // Disparar eventos dos campos para ativar validações
+        for (const campo of colecao.obterCampos()) {
+            campo.notificar();
+        }
     }
 
     // listarCampos(): void
     /*
         Obtém os IDs dos campos na variável campos{} e os lista no console.
      */
-    function listarCampos() {
-        const props = [];
+    function listarCampos(colecao = new ColecaoCampos()) {
+        const ids = [];
 
-        for (const prop in Formulario.campos) {
-            props.push(`"${prop}"`);
+        for (const campo of colecao.obterCampos()) {
+            ids.push(`"${campo.id}"`);
         }
 
-        console.log(props.join(", "));
+        console.log(ids.join(", "));
     }
 
     // carregarFontes(dadosPlataforma: {}): void
@@ -161,7 +170,7 @@ const Controlador = (() => {
             fonte.definirDados(await Consultor.carregarFonte(fonte, token));
             console.log(fonte.dados);
 
-            /* Trocar isso para variar conforme o tipo do campo ou algo assim
+            /* TODO: Trocar isso para variar conforme o tipo do campo ou algo assim
             for (const campo of fonte.camposCorrespondentes) {
                 Formulario.campos[campo].adicionarOpcoes(fonte.obterOpcoes());
             }
@@ -170,25 +179,24 @@ const Controlador = (() => {
     }
 
     function atualizarCamposFonte(idFonte, registro) {
-        if (idFonte == null) {
+        if (!idFonte) {
             const msg = "O ID da fonte para atualização dos campos fonte não pode ser nulo.";
             Mensagem.exibir("Configurações inválidas", msg, "erro");
-            throw Error(msg);
+            throw new Error(msg);
         }
 
-        const campos = $(`[${Constantes.campos.atributos.fonte}=${idFonte}]`);
+        const camposAssociados = colecao.obterCampos().filter((campo = new Campo()) => {
+            return campo.fonte?.id === idFonte;
+        });
 
         if (registro) {
-            campos.each(function() {
-                const campo = $(this);
-                campo.val(registro[campo.attr(Constantes.campos.atributos.campoFonte)])
-                    .trigger("input")
-                    .trigger("change")
-                    .trigger("blur.obrigatorio");
+            camposAssociados.forEach((campo) => {
+                campo.notificar();
+                campo.val(registro[campo.campoFonte]);
             });
         }
         else {
-            campos.val("");
+            camposAssociados.forEach((campo) => campo.val(""));
         }
     }
 
@@ -231,9 +239,9 @@ const Controlador = (() => {
                 + "no formulário para prosseguir.";
             Mensagem.exibir(titulo, mensagem, "aviso");
             throw new Error(mensagem);
-        } else {
-            Mensagem.exibir(titulo, mensagem, "sucesso");
         }
+
+        Mensagem.exibir(titulo, mensagem, "sucesso");
     }
 
     function obterToken() {
@@ -246,7 +254,7 @@ const Controlador = (() => {
         Ex.: https://gnativa.github.io/bpm-clientes-fornecedores/?etapa=solicitacao&
         O "&" ao final é adicionado para considerar os parâmetros inseridos na URL pelo próprio Senior X.
      */
-    function configurarEtapas() {
+    function configurarEtapas(colecao = new ColecaoCampos()) {
         const url = new URL(window.location.toLocaleString());
         const parametros = url.searchParams;
         etapa = parametros.get("etapa");
@@ -254,27 +262,34 @@ const Controlador = (() => {
         // Bloquear todos os campos caso o formulário seja acessado de modo avulso
         // Ex.: consulta da solicitação na Central de Tarefas
         if (etapa === null || !(etapa in Formulario.camposObrigatorios)) {
-            for (const idCampo in Formulario.campos) {
-                Formulario.campos[idCampo].definirEdicao(false);
-                Formulario.campos[idCampo].sobrescreverEditabilidade(true);
-                Formulario.campos[idCampo].sobrescreverObrigatoriedade(true);
+            for (const campo of colecao.obterCampos()) {
+                campo.definirEdicao(false);
+                campo.sobrescreverEditabilidade(true);
+                campo.sobrescreverObrigatoriedade(true);
             }
 
             return;
         }
 
         for (const idCampo of Formulario.camposObrigatorios[etapa]) {
-            Formulario.campos[idCampo].definirObrigatoriedade(true);
+            const lista = colecao.obterLista(idCampo);
+            lista.forEach((campo = new Campo()) => campo.definirObrigatoriedade(true));
         }
 
         for (const idCampo of Formulario.camposBloqueados[etapa]) {
-            Formulario.campos[idCampo].definirEdicao(false);
-            Formulario.campos[idCampo].sobrescreverEditabilidade(true);
+            const lista = colecao.obterLista(idCampo);
+            lista.forEach((campo = new Campo()) => {
+                campo.definirEdicao(false);
+                campo.sobrescreverEditabilidade(true);
+            });
         }
 
         for (const idCampo of Formulario.camposOcultos[etapa]) {
-            Formulario.campos[idCampo].definirVisibilidade(false);
-            Formulario.campos[idCampo].sobrescreverVisibilidade(true);
+            const lista = colecao.obterLista(idCampo);
+            lista.forEach((campo = new Campo()) => {
+                campo.definirVisibilidade(false);
+                campo.sobrescreverVisibilidade(true);
+            });
         }
     }
 
