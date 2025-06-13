@@ -762,16 +762,6 @@ const Formulario = (() => {
         }
     }
 
-    // salvarDados(listaDeCampos: array<Campo>): void
-    /*
-        Salva os campos de uma lista no objeto de campos{} para acesso via ID.
-     */
-    function salvarCampos(listaDeCampos) {
-        for (const campo of listaDeCampos) {
-            campos[campo["id"]] = campo;
-        }
-    }
-
     return {
         personalizacao,
         campos,
