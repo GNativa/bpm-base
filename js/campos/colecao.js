@@ -75,7 +75,7 @@ class ColecaoCampos {
         const campos = [];
 
         for (const lista of ColecaoCampos.#campos.values()) {
-            campos.push(ColecaoCampos.#campos[lista]);
+            campos.push(lista);
         }
 
         return campos.flat();
