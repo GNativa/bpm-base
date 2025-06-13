@@ -1,24 +1,25 @@
 class ListaObjetos extends Secao {
-    constructor(id, titulo, campos, factories = [], permiteAdicionarLinhas = true, permiteRemoverLinhas = true) {
-        super(id, titulo, campos);
-        this.factories = factories;
-        this.camposLista = [];
+    constructor(id, titulo, campos, colecao, factories, permiteAdicionarLinhas = true, permiteRemoverLinhas = true) {
+        super(id, titulo, campos, colecao);
+        this.factories = factories ?? [];
+        this.camposLista = new Map();
         this.permiteAdicionarLinhas = permiteAdicionarLinhas;
         this.permiteRemoverLinhas = permiteRemoverLinhas;
     }
 
-    adicionarLinha() {
-        const indiceUltimaLinha = this.obterIndiceUltimaLinha();
+    criarLinha() {
+        const indice = this.obterIndiceUltimaLinha() + 1;
 
-        const linhaItem = $(`<div data-linha-lista='${indiceUltimaLinha}' class="row g-3"></div>`);
+        const linhaItem = $(`<div ${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}" class="row g-3"></div>`);
         const colunaBotaoRemover = $(`<div class="col-12 d-flex justify-content-end"></div>`);
         const botaoRemover = $(`
-            <button type="button" title="Remover linha" id="removerLinhaSecao${this.id}${indiceUltimaLinha}" class="btn botao ms-3">
+            <button type="button" title="Remover linha" id="removerLinhaSecao${this.id}${indice}" class="btn botao ms-3">
                 <i class="bi bi-x fs-5"></i>
-            </button>`);
+            </button>
+        `);
 
         botaoRemover.on("click", () => {
-            this.removerLinha(indiceUltimaLinha);
+            this.removerLinha(indice);
         });
 
         if (!this.permiteRemoverLinhas) {
@@ -27,13 +28,13 @@ class ListaObjetos extends Secao {
 
         const hr = $("<hr>");
 
-        if (indiceUltimaLinha === 0) {
+        if (indice === 0) {
             botaoRemover.prop("disabled", true);
             hr.addClass("border-2");
         }
         else {
             hr.addClass("border-1");
-            linhaItem.addClass("mt-1");
+            //linhaItem.addClass("mt-1");
         }
 
         colunaBotaoRemover.append(botaoRemover);
@@ -43,14 +44,16 @@ class ListaObjetos extends Secao {
         const camposDaLinha = [];
 
         for (const factory of this.factories) {
-            const novoId = `${factory.idCampo}${indiceUltimaLinha}`;
+            const novoId = `${factory.idCampo}${indice}`;
 
             if (document.getElementById(novoId) !== null) {
                 throw Error(`Já existe um campo com o id "${novoId}".`);
             }
 
             const campo = factory.construir(novoId);
-            campo.definirListaDeObjetos(this);
+            campo.atribuirListaObjetos(this);
+            campo.atribuirIdAgrupado(factory.idCampo);
+            campo.atribuirLinhaLista(indice);
 
             linhaItem.append(campo.coluna);
             camposDaLinha.push(campo);
@@ -58,30 +61,34 @@ class ListaObjetos extends Secao {
 
         this.divSecao.append(linhaItem);
         linhaItem.before(hr);
-        this.camposLista.push(camposDaLinha);
+        this.camposLista.set(indice, camposDaLinha);
     }
 
-    gerar() {
-        super.gerar();
-        // this.divSecao.addClass("row");
+    salvarCampos() {
+        const campos = this.camposLista.get(this.obterIndiceUltimaLinha());
+        this.colecao.salvarCampos(campos);
     }
 
-    removerLinha(indice) {
-        $(`[data-linha-lista=${indice}]`).remove();
-        this.camposLista.splice(indice, 1);
+    removerLinha(indice = 0) {
+        $(`
+        [${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"],
+        hr:has(+ [${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"])
+        `).remove();
+
+        this.colecao.removerCampos(this.camposLista.get(indice));
+        this.camposLista.delete(indice);
     }
 
     obterIndiceUltimaLinha() {
-        return this.camposLista.length;
+        const chaves = this.camposLista.keys().toArray();
+        const indice = Math.max(...chaves);
+        return indice === -Infinity ? -1 : indice;
     }
 
-    configurarTitulo(elementoSecao) {
+    configurarTitulo(elementoSecao = $("")) {
         // const colunaSuperior = $(`<div class="col-12"></div>`);
-
         const linhaTitulo = $(`<div class="row mt-3"></div>`);
-
         const colunaTitulo = $(`<div class="col"></div>`);
-
         const tituloSecao = $(`<div class="titulo-m"></div>`);
         tituloSecao.text(this.titulo);
 
