@@ -21,6 +21,6 @@ class CampoData extends CampoEntrada {
             data = this.dataInicial;
         }
 
-        this.val(data.toISOString().slice(0, 11));
+        this.val(data.toISOString().slice(0, 10));
     }
 }
