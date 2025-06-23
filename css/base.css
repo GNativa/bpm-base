@@ -181,8 +181,8 @@ select[required], input[type="file"][required] {
             #ffffff 50%,
             color-mix(in oklab, var(--cor-base) 7.5%, rgba(0, 0, 0, 0) 92.5%) 100%
     );
-    border-top: 3px solid color-mix(in oklab, var(--cor-base) 40%, rgba(0, 0, 0, 0) 60%);
-    border-bottom: 3px solid color-mix(in oklab, var(--cor-base) 40%, rgba(0, 0, 0, 0) 60%);
+    border-top: 2px solid color-mix(in oklab, var(--cor-base) 40%, rgba(0, 0, 0, 0) 60%);
+    border-bottom: 2px solid color-mix(in oklab, var(--cor-base) 40%, rgba(0, 0, 0, 0) 60%);
 }
 
 
