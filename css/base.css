@@ -168,7 +168,8 @@ select[required], input[type="file"][required] {
 
 /* Esconder títulos de seções vazias */
 .linha-titulo:not(:has(+ hr + div > div:not([style*="display: none"]))),
-.hr-titulo:not(:has(+ div > div:not([style*="display: none"]))) {
+.hr-titulo:not(:has(+ div > div:not([style*="display: none"]))),
+.linha-secao:not(:has(> div:not([style*="display: none"]))) {
     display: none;
 }
 
