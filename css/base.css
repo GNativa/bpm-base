@@ -166,10 +166,13 @@ select[required], input[type="file"][required] {
     color: var(--cor-titulo);
 }
 
-/* Esconder títulos de seções vazias */
+/* Esconder seções vazias */
+/*
 .linha-titulo:not(:has(+ hr + div > div:not([style*="display: none"]))),
 .hr-titulo:not(:has(+ div > div:not([style*="display: none"]))),
-.linha-secao:not(:has(> div:not([style*="display: none"]))) {
+.linha-secao:not(:has(> div:not([style*="display: none"]))),
+ */
+.secao:not(:has(> .linha-secao > div:not([style*="display: none"]))) {
     display: none;
 }
 
