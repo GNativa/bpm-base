@@ -3,6 +3,8 @@
     - Representação abstrata de um campo no formulário.
  */
 class Campo {
+    #validacoes = [];
+
     constructor(id, rotulo, largura, dica, tag, tipo, fonte, campoFonte) {
         this.id = id;                            // Atributo "id" do elemento HTML
         this.idAgrupado = id;                  // ID agrupado do campo para identificação em listas de objeto
@@ -12,6 +14,10 @@ class Campo {
         this.fonte = fonte ?? null;              // Fonte de dados relacionada
         this.campoFonte = campoFonte ?? null;    // Nome do campo da fonte de dados ao qual este corresponde
         this.campoMestre = null;                 // Campo mestre deste campo
+
+        if (this.fonte != null) {
+            this.fonte.inscreverCampo(this);
+        }
 
         this.tag = tag;                          // Tag do elemento HTML
         this.tipo = tipo;                        // Atributo "type" do elemento HTML, caso seja um input
@@ -27,7 +33,7 @@ class Campo {
 
         this.obrigatoriedadeSobrescrita = false; // Indica se a obrigatoriedade do campo só pode ser definida pela etapa
         this.visibilidadeSobrescrita = false;    // Indica se a visibilidade do campo só pode ser definida pela etapa
-        this.editabilidadeSobrescrita = false;   // Indica se do campo só pode ser editado pela etapa
+        this.edicaoSobrescrita = false;          // Indica se do campo só pode ser editado pela etapa
 
         this.consistenciaAtiva = null;           // Consistência ativa no campo
         this.feedback = null;                    // Elemento div que exibe uma mensagem abaixo do campo nos casos de validações.
@@ -111,6 +117,14 @@ class Campo {
         });
     }
 
+    adicionarValidacao(validacao) {
+        this.#validacoes.push(validacao);
+    }
+
+    obterValidacoes() {
+        return this.#validacoes;
+    }
+
     configurarCampo() {
         // A ser implementado pelas classes filhas
     }
@@ -184,8 +198,8 @@ class Campo {
         this.obrigatoriedadeSobrescrita = sobrescrever;
     }
 
-    sobrescreverEditabilidade(sobrescrever = false) {
-        this.editabilidadeSobrescrita = sobrescrever;
+    sobrescreverEdicao(sobrescrever = false) {
+        this.edicaoSobrescrita = sobrescrever;
     }
 
     sobrescreverVisibilidade(sobrescrever = false) {
@@ -240,7 +254,7 @@ class Campo {
     }
 
     definirEdicao(editavel = true) {
-        if (this.editabilidadeSobrescrita) {
+        if (this.edicaoSobrescrita) {
             return this;
         }
 
@@ -314,22 +328,31 @@ class Campo {
         return this.campo[0];
     }
 
+    valor(valor) {
+        return this.val(valor);
+    }
+
+    // TODO: alterar nome do método para "valor" e remover o método acima
     val(valor) {
-        if (valor === undefined) {
+        if (typeof valor === "undefined") {
             return this.campo.val();
         }
 
         return this.campo.val(valor).trigger("input").trigger("change");
     }
 
-    cleanVal() {
-        const valorLimpo = this.campo.cleanVal();
+    propriedade(propriedade, valor) {
+        return this.campo.prop(propriedade, valor);
+    }
 
-        if (valorLimpo === undefined) {
+    get valorLimpo() {
+        const valor = this.campo.cleanVal();
+
+        if (typeof valor === "undefined") {
             return this.campo.val();
         }
 
-        return valorLimpo;
+        return valor;
     }
 
     on(evento = "", funcao = (e) => {}) {
