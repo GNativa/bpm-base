@@ -21,24 +21,29 @@ class Secao {
         const tituloSecao = $(`<div class="titulo-g"></div>`);
         tituloSecao.text(this.titulo);
 
-        const hr = $(`<hr class="hr-titulo border-3">`);
+        const hr = $(`<hr class="hr-titulo border-0">`);
         linhaTitulo.append(colunaTitulo);
         colunaTitulo.append(tituloSecao);
         elementoSecao.append(linhaTitulo);
         elementoSecao.append(hr);
     }
 
+    lancarErroDeCampoDuplicado(id) {
+        throw `Já existe um campo com o id "${id}". Por gentileza, use um ID diferente.`;
+    }
+
     adicionarLinha() {
         this.criarLinha();
         this.salvarCampos();
+        Utilitario.configurarTooltips();
     }
 
     criarLinha() {
-        const linhaCampos = $(`<div class="row g-3"></div>`);
+        const linhaCampos = $(`<div class="row g-3 pb-3 linha-secao"></div>`);
 
         for (const campo of this.campos) {
             if (document.getElementById(campo.id) !== null) {
-                throw Error(`Já existe um campo com o id "${campo.id}".`);
+                this.lancarErroDeCampoDuplicado(campo.id);
             }
 
             linhaCampos.append(campo.coluna);
@@ -62,7 +67,7 @@ class Secao {
         const possuiTitulo = this.possuiTitulo;
 
         secao.attr("id", id);
-        secao.addClass("mb-4");
+        secao.addClass("secao mb-4");
 
         if (possuiTitulo) {
             this.configurarTitulo(secao);
@@ -71,6 +76,7 @@ class Secao {
         this.adicionarLinha();
         const elemento = $(secao);
         $("#containerFormulario").append(elemento);
+        Utilitario.configurarTooltips();
 
         this.elemento = elemento;
         this.gerada = true;
