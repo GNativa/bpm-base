@@ -24,6 +24,26 @@ class Fonte {
                 return dados;
             };
 
+        this.registroAtual = null;
+        this.camposInscritos = new Set();
+    }
+
+    inscreverCampo(campo) {
+        this.camposInscritos.add(campo);
+    }
+
+    atualizarRegistro(registro) {
+        this.registroAtual = registro;
+        this.notificarCampos();
+    }
+
+    notificarCampos() {
+        this.camposInscritos.forEach((campo) => {
+            if (campo.campoFonte) {
+                campo.val(this.registroAtual?.[campo.campoFonte] ?? "");
+                campo.notificar();
+            }
+        });
     }
 
     definirDados(dados) {

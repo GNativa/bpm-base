@@ -52,11 +52,11 @@ class CampoTexto extends CampoEntrada {
 
             this.iniciarCarregamento();
 
-            const busca = TelaFactory.obterTela(Constantes.telas.busca, {
+            const parametros = {
                 campo: this,
                 aceitarValorVazio: false,
                 naSelecao: (registro) => {
-                    Controlador.atualizarCamposFonte(this.fonte?.id ?? "", registro);
+                    this.fonte.atualizarRegistro(registro);
                     this.valorAnterior = registro[this.campoFonte];
                     this.pesquisarNovamente = false;
                     this.finalizarCarregamento(false);
@@ -65,8 +65,9 @@ class CampoTexto extends CampoEntrada {
                     this.valorAnterior = this.val();
                     this.finalizarCarregamento(true);
                 }
-            });
+            };
 
+            const busca = TelaFactory.obterTela(Constantes.telas.busca, parametros);
             await busca.abrir();
         });
     }
@@ -109,7 +110,7 @@ class CampoTexto extends CampoEntrada {
             // ou o botão de busca for clicado
 
             if (event.target.value === this.valorAnterior
-             || event.relatedTarget?.id === `${Constantes.campos.prefixoIdBotaoPesquisa}${this.id}`) {
+                || event.relatedTarget?.id === `${Constantes.campos.prefixoIdBotaoPesquisa}${this.id}`) {
                 return;
             }
 
@@ -117,7 +118,13 @@ class CampoTexto extends CampoEntrada {
 
             try {
                 if (this.pesquisarNovamente) {
-                    this.fonte.definirDados(await Consultor.carregarFonte(this.fonte, Controlador.obterToken()));
+                    // TODO: Obter token de forma melhor estruturada e injetar dependência do consultor na fonte
+                    this.fonte.definirDados(
+                        await Consultor.carregarFonte(
+                            this.fonte,
+                            null // Controlador.obterToken()
+                        )
+                    );
                     // this.fonte.definirDados(Constantes.fontes.dadosTeste);
                     this.pesquisarNovamente = false;
                 }
@@ -133,7 +140,7 @@ class CampoTexto extends CampoEntrada {
                 let valor;
 
                 if (this.filtrarValorLimpo) {
-                    valor = this.cleanVal();
+                    valor = this.valorLimpo;
                 }
                 else {
                     valor = this.val();
@@ -143,7 +150,7 @@ class CampoTexto extends CampoEntrada {
                 const dadosFiltrados = Utilitario.filtrarDados(dados, valor, dados[0], this.campoFonte);
 
                 if (dadosFiltrados.length === 1) {
-                    Controlador.atualizarCamposFonte(this.fonte.id, dadosFiltrados[0]);
+                    this.fonte.atualizarRegistro(dadosFiltrados[0]);
                     this.finalizarCarregamento();
                     this.pesquisarNovamente = true;
                     this.tratarConsulta(dadosFiltrados);
@@ -154,7 +161,7 @@ class CampoTexto extends CampoEntrada {
                 }
                 else {
                     if (this.limitarValores) {
-                        Controlador.atualizarCamposFonte(this.fonte.id);
+                        this.fonte.atualizarRegistro(null);
                     }
 
                     this.falharCarregamento();
@@ -207,9 +214,8 @@ class CampoTexto extends CampoEntrada {
             itemDropdown.attr(Constantes.gerais.atributos.sequencia, i);
             itemDropdown.text(dadosFiltrados[i][this.campoFonte]);
             itemDropdown.on("click", () => {
-                Controlador.atualizarCamposFonte(
-                    this.fonte.id,
-                    dadosFiltrados[itemDropdown.attr(Constantes.gerais.atributos.sequencia,)]
+                this.fonte.atualizarRegistro(
+                    dadosFiltrados[itemDropdown.attr(Constantes.gerais.atributos.sequencia)]
                 );
                 this.finalizarCarregamento();
                 this.pesquisarNovamente = true;
