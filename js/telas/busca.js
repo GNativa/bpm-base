@@ -78,7 +78,9 @@ class TelaDeBusca extends Tela {
             return;
         }
 
-        const token = Controlador.obterToken();
+        // TODO: Obter token de forma melhor estruturada
+        const token =
+            null // Controlador.obterToken();
 
         try {
             let dados;
