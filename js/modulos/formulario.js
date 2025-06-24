@@ -2,7 +2,7 @@
     > Formulário
         - Mantém o estado do formulário, realizando carregamento e salvamento de dados, validações, etc.
  */
-
+// TODO: atualizar classe para o novo formato
 const Formulario = (() => {
     // Variáveis para uso em validações, consultas, etc.
     let campos = {};                                    // Objeto contendo referências aos campos do formulário
