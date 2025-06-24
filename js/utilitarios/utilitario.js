@@ -98,10 +98,31 @@ const Utilitario = (() => {
         });
     }
 
+    const criarGetterDeArray = function(funcao) {
+        return () => Array.from(funcao?.() ?? []);
+    }
+
+    const obterEtapa = function() {
+        const url = new URL(window.location.toLocaleString());
+        const parametros = url.searchParams;
+        return parametros.get("etapa");
+    }
+
+    const configurarTooltips = function() {
+        const tooltipTriggerList =
+            document.querySelectorAll(`[data-bs-toggle="tooltip"]`);
+        const tooltipList = [...tooltipTriggerList].map(
+            tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+        );
+    }
+
     return {
         salvarArquivosEmString,
         carregarArquivosDeString,
         obterDicionario,
         filtrarDados,
+        criarGetterDeArray,
+        obterEtapa,
+        configurarTooltips,
     };
 })();
