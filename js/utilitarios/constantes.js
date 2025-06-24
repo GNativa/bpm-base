@@ -13,6 +13,9 @@ class Constantes {
         atributos: Object.freeze({
             fonte: "data-fonte",
             campoFonte: "data-campo-fonte",
+            linhaListaObjetos: "data-linha-lista-",
+            campoListaObjetos: "data-lista",
+            sequenciaCampoLista: "data-lista-seq",
         }),
     });
 
