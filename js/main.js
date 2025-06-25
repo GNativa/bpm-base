@@ -1,9 +1,7 @@
 $(document).ready(() => {
     const validador = new Validador();
     const colecao = new ColecaoCampos();
-
     const controlador = new Controlador(validador, colecao, new Formulario(colecao, validador));
-
     controlador.inicializar();
 
     /*
@@ -16,6 +14,7 @@ $(document).ready(() => {
             `Houve um erro ao inicializar o formulário: ${e}`,
             "ERRO"
         );
+        throw e;
     }
      */
 });

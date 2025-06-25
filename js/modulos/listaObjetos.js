@@ -1,18 +1,64 @@
 class ListaObjetos extends Secao {
     #colecao;
-    #factories;
     #validador;
+    #factories = [];
+    #filtros = [];
+    #colunaBotoes = $(`<div class="col-4 d-flex justify-content-end"></div>`);
     #camposLista = new Map();
+    #linhas = new Map();
     #permiteAdicionarLinhas;
     #permiteRemoverLinhas;
 
-    constructor(id, titulo, colecao, factories, validador, permiteAdicionarLinhas = true, permiteRemoverLinhas = true) {
+    constructor(id, titulo, colecao, validador, factories, filtros,
+                permiteAdicionarLinhas = true, permiteRemoverLinhas = true) {
         super(id, titulo, null);
-        this.#factories = factories ?? [];
-        this.#validador = validador;
         this.#colecao = colecao;
+        this.#validador = validador;
+        this.#factories = factories ?? [];
+        this.#filtros = filtros ?? [];
         this.#permiteAdicionarLinhas = permiteAdicionarLinhas;
         this.#permiteRemoverLinhas = permiteRemoverLinhas;
+    }
+
+    gerar() {
+        super.gerar();
+        this.#configurarFiltros();
+    }
+
+    #configurarFiltros() {
+        const factories = this.#factories.filter((factory) => {
+            return this.#filtros.indexOf(factory.idCampo) !== -1;
+        });
+
+        if (factories.length === 0) {
+            return;
+        }
+
+        const hr = $(`<hr class="border-0">`);
+        const linhaFiltros = $(`<div class="row"></div>`);
+
+        const primeiraLinha = this.#linhas.get(0);
+        primeiraLinha.before(hr);
+        hr.before(linhaFiltros);
+
+        const botaoFiltrar = $(`
+            <button type="button" title="Filtrar" id="botaoFiltrar${this.id}" class="btn botao ms-3">
+                <i class="bi bi-plus fs-5 me-2">bi-funnel-fill</i>Filtrar
+            </button>
+        `);
+
+        this.#colunaBotoes.append(botaoFiltrar);
+
+        // TODO: implementar filtro
+        botaoFiltrar.on("click", () => {
+
+        });
+
+        for (const factory of factories) {
+            const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
+            const campo = factory.construir(idCampoFiltro);
+            linhaFiltros.append(campo.coluna);
+        }
     }
 
     get tamanho() {
@@ -29,7 +75,8 @@ class ListaObjetos extends Secao {
         const linhaItem = $(`
             <div ${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"
                  class="row g-3 pb-3 linha-secao">
-            </div>`);
+            </div>
+        `);
 
         const botaoRemover = $(`
             <button type="button" title="Remover linha" id="removerLinhaSecao${this.id}${indice}" class="btn botao ms-3">
@@ -81,6 +128,7 @@ class ListaObjetos extends Secao {
 
         this.divSecao.append(linhaItem);
         linhaItem.before(hr);
+        this.#linhas.set(indice, linhaItem);
         this.#camposLista.set(indice, camposDaLinha);
     }
 
@@ -96,8 +144,8 @@ class ListaObjetos extends Secao {
 
     removerLinha(indice = 0) {
         $(`
-        [${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"],
-        hr:has(+ [${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"])
+            [${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"],
+            hr:has(+ [${Constantes.campos.atributos.linhaListaObjetos}${this.id}="${indice}"])
         `).remove();
 
         const lista = this.#camposLista.get(indice);
@@ -125,8 +173,6 @@ class ListaObjetos extends Secao {
         linhaTitulo.append(colunaTitulo);
 
         if (this.#permiteAdicionarLinhas) {
-            const colunaBotao = $(`<div class="col-2 d-flex justify-content-end"></div>`);
-
             const botaoNovaLinha = $(`
                 <button type="button" title="Nova linha" id="novaLinha${this.id}" class="btn botao ms-3">
                     <i class="bi bi-plus fs-5 me-2"></i>Nova linha
@@ -137,15 +183,14 @@ class ListaObjetos extends Secao {
                 botaoNovaLinha.on("click", () => {
                     this.adicionarLinha();
                 });
-            }
-            else {
+            } else {
                 botaoNovaLinha.prop("disabled", true);
             }
 
-            colunaBotao.append(botaoNovaLinha);
-            linhaTitulo.append(colunaBotao);
+            this.#colunaBotoes.append(botaoNovaLinha);
         }
 
+        linhaTitulo.append(this.#colunaBotoes);
         colunaTitulo.append(tituloSecao);
         // elementoSecao.append(colunaSuperior);
         elementoSecao.append(linhaTitulo);

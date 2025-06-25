@@ -16,6 +16,7 @@ class Constantes {
             linhaListaObjetos: "data-linha-lista-",
             campoListaObjetos: "data-lista",
             sequenciaCampoLista: "data-lista-seq",
+            filtroListaObjetos: "Filtro",
         }),
     });
 

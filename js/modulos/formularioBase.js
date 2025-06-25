@@ -2,27 +2,92 @@ class FormularioBase {
     #campos;
     #secoes = new Map();
     #fontes = new Map();
-    #validador;
+    #conversores = [];
+    #validador = null;
+    #validacoes = [];
     #personalizacao = new Map();
 
-    constructor(colecao, validador, secoes, camposObrigatorios, camposBloqueados, camposOcultos) {
+    constructor(colecao, validador) {
         this.#campos = colecao;
         this.#validador = validador;
+    }
 
-        this.#validador.definirCamposObrigatorios(camposObrigatorios);
-        this.#validador.definirCamposBloqueados(camposBloqueados);
-        this.#validador.definirCamposOcultos(camposOcultos);
+    set validacoes(validacoes) {
+        this.#validacoes = validacoes;
+    }
+
+    obterValidacoes() {
+        return this.#validacoes;
+    }
+
+    atribuirCampos(colecao) {
+        this.#campos = colecao;
+    }
+
+    atribuirValidador(validador) {
+        this.#validador = validador;
     }
 
     salvarSecao(secao) {
         this.#secoes.set(secao.id, secao);
     }
 
-    obterCampo(id) {
-
+    set conversores(conversores) {
+        this.#conversores = conversores;
     }
 
-    carregarListaDeObjetos(array, listaDeObjetos, conversores = [new Conversor()]) {
+    set camposObrigatorios(campos) {
+        this.#validador.definirCamposObrigatorios(campos);
+    }
+
+    set camposBloqueados(campos) {
+        this.#validador.definirCamposBloqueados(campos);
+    }
+
+    set camposOcultos(campos) {
+        this.#validador.definirCamposOcultos(campos);
+    }
+
+    obterCampo(id, linha) {
+        if (typeof linha === "undefined") {
+            return this.#campos.obterCampo(id);
+        }
+
+        return this.#campos.obterPorLinha(id, linha);
+    }
+
+    obterCampos(idAgrupado) {
+        return this.#campos.obter(idAgrupado);
+    }
+
+    carregarArrayPorLista(listaDeObjetos) {
+        const array = [];
+
+        for (let i = 0; i < listaDeObjetos.tamanho; i++) {
+            const objeto = {};
+
+            if (this.#conversores.length === 0) {
+                for (const campo of listaDeObjetos.obterLinha(i)) {
+                    objeto[campo.id] = campo.valor();
+                }
+            }
+            else {
+                for (const conversor of this.#conversores) {
+                    if (!conversor.salvar) {
+                        continue;
+                    }
+
+                    objeto[conversor.propriedade] = this.#campos.obterPorLinha(conversor.idCampo, i).valor();
+                }
+            }
+
+            array.push(objeto);
+        }
+
+        return array;
+    }
+
+    carregarListaDeObjetos(array, listaDeObjetos) {
         for (let i = 0; i < array.length; i++) {
             if (i > 0) {
                 listaDeObjetos.adicionarLinha();
@@ -30,10 +95,14 @@ class FormularioBase {
 
             const indice = listaDeObjetos.obterIndiceUltimaLinha();
 
-            for (const conversor of conversores) {
+            for (const conversor of this.#conversores) {
+                if (!conversor.carregar) {
+                    continue;
+                }
+
                 const campo = this.#campos.obterPorLinha(conversor.idCampo, indice);
                 const valor = conversor.obterValor(array[i]);
-                campo.val(valor);
+                campo.valor(valor);
             }
         }
     }
