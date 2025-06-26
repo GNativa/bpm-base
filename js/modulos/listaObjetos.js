@@ -43,7 +43,7 @@ class ListaObjetos extends Secao {
 
         const botaoFiltrar = $(`
             <button type="button" title="Filtrar" id="botaoFiltrar${this.id}" class="btn botao ms-3">
-                <i class="bi bi-plus fs-5 me-2">bi-funnel-fill</i>Filtrar
+                <i class="bi bi-funnel-fill fs-5 me-2"></i>Filtrar
             </button>
         `);
 
