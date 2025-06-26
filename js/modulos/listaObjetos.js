@@ -36,7 +36,7 @@ class ListaObjetos extends Secao {
         }
 
         const hr = $(`<hr class="border-0">`);
-        const linhaFiltros = $(`<div class="row"></div>`);
+        const linhaFiltros = $(`<div class="row g-3"></div>`);
 
         const primeiraLinha = this.#linhas.get(0);
         primeiraLinha.before(hr);
@@ -60,6 +60,7 @@ class ListaObjetos extends Secao {
         for (const factory of factories) {
             const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
             const campo = factory.construir(idCampoFiltro);
+            campo.label.find("i").remove();
             linhaFiltros.append(campo.coluna);
             this.#camposFiltro.push(campo);
         }
