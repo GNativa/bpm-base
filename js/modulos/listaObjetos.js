@@ -5,6 +5,7 @@ class ListaObjetos extends Secao {
     #filtros = [];
     #colunaBotoes = $(`<div class="col-4 d-flex justify-content-end"></div>`);
     #camposLista = new Map();
+    #camposFiltro = [];
     #linhas = new Map();
     #permiteAdicionarLinhas;
     #permiteRemoverLinhas;
@@ -20,8 +21,8 @@ class ListaObjetos extends Secao {
         this.#permiteRemoverLinhas = permiteRemoverLinhas;
     }
 
-    gerar() {
-        super.gerar();
+    configurarSecao() {
+        super.configurarSecao();
         this.#configurarFiltros();
     }
 
@@ -42,23 +43,35 @@ class ListaObjetos extends Secao {
         hr.before(linhaFiltros);
 
         const botaoFiltrar = $(`
-            <button type="button" title="Filtrar" id="botaoFiltrar${this.id}" class="btn botao ms-3">
-                <i class="bi bi-funnel-fill fs-5 me-2"></i>Filtrar
+            <button id="botaoFiltrar${this.id}" type="button" title="Filtrar" class="btn botao ms-3">
+                <i class="bi bi-funnel-fill fs-5 me-2"></i>
+            </button>
+        `);
+
+        const botaoLimparFiltro = $(`
+            <button id="botaoLimparFiltro${this.id}" type="button" title="Limpar filtros" class="btn botao ms-3">
+                <i class="bi bi-eraser-fill fs-5 me-2"></i>
             </button>
         `);
 
         this.#colunaBotoes.append(botaoFiltrar);
-
-        // TODO: implementar filtro
-        botaoFiltrar.on("click", () => {
-
-        });
+        this.#colunaBotoes.append(botaoLimparFiltro);
 
         for (const factory of factories) {
             const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
             const campo = factory.construir(idCampoFiltro);
             linhaFiltros.append(campo.coluna);
+            this.#camposFiltro.push(campo);
         }
+
+        botaoLimparFiltro.on("click", () => {
+
+        });
+
+        // TODO: implementar filtro
+        botaoFiltrar.on("click", () => {
+
+        });
     }
 
     get tamanho() {
@@ -175,7 +188,7 @@ class ListaObjetos extends Secao {
         if (this.#permiteAdicionarLinhas) {
             const botaoNovaLinha = $(`
                 <button type="button" title="Nova linha" id="novaLinha${this.id}" class="btn botao ms-3">
-                    <i class="bi bi-plus fs-5 me-2"></i>Nova linha
+                    <i class="bi bi-plus fs-5 me-2"></i>
                 </button>
             `);
 

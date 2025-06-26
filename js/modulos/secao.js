@@ -55,14 +55,8 @@ class Secao {
         this.colecao.salvarCampos(this.campos);
     }
 
-    gerar() {
-        const gerada = this.gerada;
+    configurarSecao() {
         const secao = this.divSecao;
-
-        if (gerada) {
-            return null;
-        }
-
         const id = this.id;
         const possuiTitulo = this.possuiTitulo;
 
@@ -76,11 +70,21 @@ class Secao {
         this.adicionarLinha();
         const elemento = $(secao);
         $("#containerFormulario").append(elemento);
-        Utilitario.configurarTooltips();
 
         this.elemento = elemento;
         this.gerada = true;
+    }
 
+    gerar() {
+        const gerada = this.gerada;
+        const secao = this.divSecao;
+
+        if (gerada) {
+            return null;
+        }
+
+        this.configurarSecao();
+        Utilitario.configurarTooltips();
         return this;
     }
 
