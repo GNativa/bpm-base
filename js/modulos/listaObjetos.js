@@ -44,13 +44,13 @@ class ListaObjetos extends Secao {
 
         const botaoFiltrar = $(`
             <button id="botaoFiltrar${this.id}" type="button" title="Filtrar" class="btn botao ms-3">
-                <i class="bi bi-funnel-fill fs-5 me-2"></i>
+                <i class="bi bi-funnel-fill fs-5"></i>
             </button>
         `);
 
         const botaoLimparFiltro = $(`
             <button id="botaoLimparFiltro${this.id}" type="button" title="Limpar filtros" class="btn botao ms-3">
-                <i class="bi bi-eraser-fill fs-5 me-2"></i>
+                <i class="bi bi-eraser-fill fs-5"></i>
             </button>
         `);
 
@@ -188,7 +188,7 @@ class ListaObjetos extends Secao {
         if (this.#permiteAdicionarLinhas) {
             const botaoNovaLinha = $(`
                 <button type="button" title="Nova linha" id="novaLinha${this.id}" class="btn botao ms-3">
-                    <i class="bi bi-plus fs-5 me-2"></i>
+                    <i class="bi bi-plus fs-5"></i>
                 </button>
             `);
 
