@@ -26,6 +26,14 @@ class ListaObjetos extends Secao {
         this.#configurarFiltros();
     }
 
+    #limparCamposDeFiltro() {
+
+    }
+
+    #limparFiltro() {
+
+    }
+
     #configurarFiltros() {
         let factories = this.#factories.filter((factory) => {
             return this.#filtros.indexOf(factory.idCampo) !== -1;
@@ -72,6 +80,12 @@ class ListaObjetos extends Secao {
             campo.label.find("i").remove();
             linhaFiltros.append(campo.coluna);
             this.#camposFiltro.push(campo);
+
+            campo.adicionarEvento("keyup", (evento) => {
+                if (evento.key === "Enter") {
+                    botaoFiltrar.click();
+                }
+            });
         }
 
         botaoLimparFiltro.on("click", () => {
@@ -79,6 +93,9 @@ class ListaObjetos extends Secao {
         });
 
         // TODO: implementar filtro
+        /*
+            1. Passar em cada linha comparando os valores com os campos do filtro
+         */
         botaoFiltrar.on("click", () => {
 
         });
