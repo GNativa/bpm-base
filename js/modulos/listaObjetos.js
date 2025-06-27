@@ -27,12 +27,21 @@ class ListaObjetos extends Secao {
     }
 
     #configurarFiltros() {
-        const factories = this.#factories.filter((factory) => {
+        let factories = this.#factories.filter((factory) => {
             return this.#filtros.indexOf(factory.idCampo) !== -1;
         });
 
         if (factories.length === 0) {
             return;
+        }
+
+        if (factories.length > 1) {
+            // Ordenar factories conforme a ordem do filtro
+            factories = factories.map((valor, indice) => {
+                return factories.find((elemento) => {
+                    return elemento.idCampo === this.#filtros[indice];
+                });
+            });
         }
 
         const hr = $(`<hr class="border-0">`);
