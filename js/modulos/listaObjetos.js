@@ -58,6 +58,13 @@ class ListaObjetos extends Secao {
         const primeiraLinha = this.#linhas.get(0);
         primeiraLinha.before(hr);
         hr.before(linhaFiltros);
+        linhaFiltros.before(`
+            <div class="row">
+                <div class="col fst-italic fw-bold mb-2">
+                    Filtros
+                </div>
+            </div>
+        `);
 
         const botaoFiltrar = $(`
             <button id="botaoFiltrar${this.id}" type="button" title="Filtrar" class="btn botao ms-3">
@@ -77,6 +84,7 @@ class ListaObjetos extends Secao {
         for (const factory of factories) {
             const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
             const campo = factory.construir(idCampoFiltro);
+            campo.atribuirIdAgrupado(factory.idCampo);
             campo.label.find("i").remove();
             linhaFiltros.append(campo.coluna);
             this.#camposFiltro.push(campo);
@@ -89,15 +97,43 @@ class ListaObjetos extends Secao {
         }
 
         botaoLimparFiltro.on("click", () => {
-
+            for (const linha of this.#linhas.values()) {
+                linha.show();
+            }
         });
 
-        // TODO: implementar filtro
-        /*
-            1. Passar em cada linha comparando os valores com os campos do filtro
-         */
         botaoFiltrar.on("click", () => {
+            for (const indice of this.#camposLista.keys().toArray().sort()) {
+                const campos = this.#camposLista.get(indice);
 
+                if (!campos) {
+                    const mensagem = `O índice "${indice}" não existe na lista de objetos "${this.id}".`;
+                    Mensagem.exibir("Índice inválido", mensagem, "erro");
+                    throw new Error(mensagem);
+                }
+
+                const filtrosPreenchidos = this.#camposFiltro.filter((campo) => {
+                    return campo.valor() !== "" && campo.valor() !== false;
+                });
+
+                for (const campoFiltro of filtrosPreenchidos) {
+                    const campoLinha = campos.find((campo) => campo.idAgrupado === campoFiltro.idAgrupado);
+
+                    if (campoFiltro.valor() === campoLinha.valor()) {
+                        continue;
+                    }
+
+                    const linha = this.#linhas.get(indice);
+
+                    if (!linha) {
+                        const mensagem = `A linha de índice "${indice}" não existe na lista de objetos "${this.id}".`;
+                        Mensagem.exibir("Índice inválido", mensagem, "erro");
+                        throw new Error(mensagem);
+                    }
+
+                    linha.hide();
+                }
+            }
         });
     }
 
