@@ -181,18 +181,13 @@ class Campo {
         this.idAgrupado = idAgrupado;
     }
 
-    /*
-    definirLinha(linha) {
-        this.linha = linha;
-        const lista = this.listaDeObjetos;
-
-        if (lista != null) {
-            this.campo.attr(`${Constantes.campos.atributos.sequenciaCampoLista}`, linha);
-            this.campo.attr(`${Constantes.campos.atributos.campoListaObjetos}`, lista.id);
-        }
+    get preenchido() {
+        return this.valor() !== "";
     }
 
-     */
+    limpar() {
+        this.valor("");
+    }
 
     sobrescreverObrigatoriedade(sobrescrever = false) {
         this.obrigatoriedadeSobrescrita = sobrescrever;

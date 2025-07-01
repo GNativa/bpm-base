@@ -4,6 +4,14 @@ class CampoCheckbox extends CampoEntrada {
         this.inicializar();
     }
 
+    get preenchido() {
+        return this.valor() === true;
+    }
+
+    limpar() {
+        this.valor(false);
+    }
+
     val(valor) {
         if (typeof valor === "undefined") {
             return this.campo.prop("checked");

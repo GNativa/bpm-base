@@ -97,6 +97,10 @@ class ListaObjetos extends Secao {
         }
 
         botaoLimparFiltro.on("click", () => {
+            for (const campoFiltro of this.#camposFiltro) {
+                campoFiltro.limpar();
+            }
+
             for (const linha of this.#linhas.values()) {
                 linha.show();
             }
@@ -113,7 +117,7 @@ class ListaObjetos extends Secao {
                 }
 
                 const filtrosPreenchidos = this.#camposFiltro.filter((campo) => {
-                    return campo.valor() !== "" && campo.valor() !== false;
+                    return campo.preenchido;
                 });
 
                 for (const campoFiltro of filtrosPreenchidos) {
