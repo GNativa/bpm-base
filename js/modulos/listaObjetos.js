@@ -3,6 +3,7 @@ class ListaObjetos extends Secao {
     #validador;
     #factories = [];
     #filtros = [];
+    #filtrada = false;
     #colunaBotoes = $(`<div class="col-4 d-flex justify-content-end"></div>`);
     #camposLista = new Map();
     #camposFiltro = [];
@@ -30,6 +31,8 @@ class ListaObjetos extends Secao {
         for (const linha of this.#linhas.values()) {
             linha.show();
         }
+
+        this.#filtrada = false;
     }
 
     #configurarFiltros() {
@@ -105,6 +108,10 @@ class ListaObjetos extends Secao {
         });
 
         botaoFiltrar.on("click", () => {
+            if (this.#filtrada) {
+                this.exibirLinhas();
+            }
+
             for (const indice of this.#camposLista.keys()) {
                 const campos = this.#camposLista.get(indice);
 
@@ -136,6 +143,8 @@ class ListaObjetos extends Secao {
                     linha.hide();
                 }
             }
+
+            this.#filtrada = true;
         });
     }
 
