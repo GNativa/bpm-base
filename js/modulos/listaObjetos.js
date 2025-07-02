@@ -35,6 +35,38 @@ class ListaObjetos extends Secao {
         this.#filtrada = false;
     }
 
+    #compararComFiltro(campo, campoFiltro) {
+        /*
+        if (campo instanceof CampoLista && campoFiltro instanceof CampoLista) {
+            const opcoesFiltro = campoFiltro.opcoes.filter((opcao) => opcao.selecionada);
+
+            if (opcoesFiltro.length === 0) {
+                return true;
+            }
+
+            const opcoesSelecionadas = campo.opcoes.filter((opcao) => opcao.selecionada);
+
+            return opcoesSelecionadas.some((opcao) => opcoesFiltro.includes(opcao));
+        }
+         */
+
+        if (campo.constructor === campoFiltro.constructor) {
+            return campo.valor() === campoFiltro.valor();
+        }
+
+        if (campo instanceof CampoCheckbox && campoFiltro instanceof CampoLista) {
+            const valorFiltro = campoFiltro.valor();
+
+            if (valorFiltro === "") {
+                return true;
+            }
+
+            return valorFiltro === "Sim" ? campo.valor() === true : campo.valor() === false;
+        }
+
+        return false;
+    }
+
     #configurarFiltros() {
         let factories = this.#factories.filter((factory) => {
             return this.#filtros.indexOf(factory.idCampo) !== -1;
@@ -86,9 +118,22 @@ class ListaObjetos extends Secao {
             const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
 
             // TODO: criar SELECT com múltiplas opções quando o campo a ser filtrado é um SELECT
-            const campo = factory.construir(idCampoFiltro);
+            let campo = factory.construir(idCampoFiltro);
+
+            if (campo instanceof CampoCheckbox) {
+                campo = new CampoLista(
+                    campo.id, campo.rotulo, campo.largura, campo.dica, campo.fonte, campo.campoFonte,
+                );
+                campo.adicionarOpcoes([
+                    new OpcaoLista("Sim", "Sim"),
+                    new OpcaoLista("Não", "Não"),
+                ]);
+            }
+            else {
+                campo.label.find("i").remove();
+            }
+
             campo.atribuirIdAgrupado(factory.idCampo);
-            campo.label.find("i").remove();
             linhaFiltros.append(campo.coluna);
             this.#camposFiltro.push(campo);
 
@@ -128,7 +173,7 @@ class ListaObjetos extends Secao {
                 for (const campoFiltro of filtrosPreenchidos) {
                     const campoLinha = campos.find((campo) => campo.idAgrupado === campoFiltro.idAgrupado);
 
-                    if (campoFiltro.valor() === campoLinha.valor()) {
+                    if (this.#compararComFiltro(campoLinha, campoFiltro)) {
                         continue;
                     }
 
