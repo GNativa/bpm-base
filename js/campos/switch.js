@@ -5,5 +5,6 @@ class CampoSwitch extends CampoCheckbox {
 
         this.filhoColuna.addClass("form-switch");
         this.campo.attr("role", "switch");
+        this.campo.attr("switch", true);
     }
 }
