@@ -26,12 +26,10 @@ class ListaObjetos extends Secao {
         this.#configurarFiltros();
     }
 
-    #limparCamposDeFiltro() {
-
-    }
-
-    #limparFiltro() {
-
+    exibirLinhas() {
+        for (const linha of this.#linhas.values()) {
+            linha.show();
+        }
     }
 
     #configurarFiltros() {
@@ -83,6 +81,8 @@ class ListaObjetos extends Secao {
 
         for (const factory of factories) {
             const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
+
+            // TODO: criar SELECT com múltiplas opções quando o campo a ser filtrado é um SELECT
             const campo = factory.construir(idCampoFiltro);
             campo.atribuirIdAgrupado(factory.idCampo);
             campo.label.find("i").remove();
@@ -101,13 +101,11 @@ class ListaObjetos extends Secao {
                 campoFiltro.limpar();
             }
 
-            for (const linha of this.#linhas.values()) {
-                linha.show();
-            }
+            this.exibirLinhas();
         });
 
         botaoFiltrar.on("click", () => {
-            for (const indice of this.#camposLista.keys().toArray().sort()) {
+            for (const indice of this.#camposLista.keys()) {
                 const campos = this.#camposLista.get(indice);
 
                 if (!campos) {

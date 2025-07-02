@@ -240,10 +240,11 @@ class Controlador {
     // #validarFormulario(): void
     /*
         Valida o formulário e exibe uma mensagem conforme o resultado da validação.
-        Caso o formulário seja inválido, um erro é lançado para impedir que a plataforma prossiga
+        Caso o formulário esteja inválido, um erro é lançado para impedir que a plataforma prossiga
         com o envio dos dados.
      */
     #validarFormulario() {
+        this.formulario.finalizar();
         this.#validador.validarCampos();
 
         const titulo = "Validação";
