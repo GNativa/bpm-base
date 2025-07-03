@@ -91,28 +91,39 @@ class ListaObjetos extends Secao {
         const primeiraLinha = this.#linhas.get(0);
         primeiraLinha.before(hr);
         hr.before(linhaFiltros);
-        linhaFiltros.before(`
-            <div class="row">
-                <div class="col fst-italic fw-bold mb-2">
-                    Filtros
-                </div>
-            </div>
+
+        const linhaTituloFiltros = $(`<div class="row"></div>`);
+        const colunaTituloFiltros = $(`<div class="col fst-italic fw-bold mb-2"></div>`);
+        linhaTituloFiltros.append(colunaTituloFiltros);
+        linhaFiltros.before(linhaTituloFiltros);
+
+        colunaTituloFiltros.append(`
+            Filtros
+            <i class="bi bi-info-circle-fill ms-2 pe-auto informativo"
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-title="Digite algo abaixo e pressione Enter ou clique no primeiro botão ao lado para filtar as linhas.">
+            </i>
         `);
 
+        Utilitario.configurarTooltips();
+
         const botaoFiltrar = $(`
-            <button id="botaoFiltrar${this.id}" type="button" title="Filtrar" class="btn botao ms-3">
+            <button id="botaoFiltrar${this.id}" type="button" title="Filtrar" class="btn btn-sm botao ms-3">
                 <i class="bi bi-funnel-fill fs-5"></i>
             </button>
         `);
 
         const botaoLimparFiltro = $(`
-            <button id="botaoLimparFiltro${this.id}" type="button" title="Limpar filtros" class="btn botao ms-3">
+            <button id="botaoLimparFiltro${this.id}" type="button" title="Limpar filtros" class="btn btn-sm botao ms-3">
                 <i class="bi bi-eraser-fill fs-5"></i>
             </button>
         `);
 
-        this.#colunaBotoes.append(botaoFiltrar);
-        this.#colunaBotoes.append(botaoLimparFiltro);
+        colunaTituloFiltros.append(botaoFiltrar);
+        colunaTituloFiltros.append(botaoLimparFiltro);
+
+        // this.#colunaBotoes.append(botaoFiltrar);
+        // this.#colunaBotoes.append(botaoLimparFiltro);
 
         for (const factory of factories) {
             const idCampoFiltro = `${factory.idCampo}${Constantes.campos.atributos.filtroListaObjetos}`;
