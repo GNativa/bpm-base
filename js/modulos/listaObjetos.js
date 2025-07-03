@@ -101,7 +101,7 @@ class ListaObjetos extends Secao {
             Filtros
             <i class="bi bi-info-circle-fill ms-2 pe-auto informativo"
             data-bs-toggle="tooltip" data-bs-placement="top"
-            data-bs-title="Digite algo abaixo e pressione Enter ou clique no primeiro botão ao lado para filtar as linhas.">
+            data-bs-title="Digite algo abaixo e pressione Enter ou clique no primeiro botão ao lado para filtrar as linhas.">
             </i>
         `);
 
@@ -109,7 +109,7 @@ class ListaObjetos extends Secao {
 
         const botaoFiltrar = $(`
             <button id="botaoFiltrar${this.id}" type="button" title="Filtrar" class="btn btn-sm botao ms-3">
-                <i class="bi bi-funnel-fill fs-5"></i>
+                <i class="bi bi-funnel fs-5"></i>
             </button>
         `);
 
@@ -155,10 +155,19 @@ class ListaObjetos extends Secao {
             });
         }
 
+        const filtroAtivoIcone = "bi-funnel-fill";
+        const filtroInativoIcone = "bi-funnel";
+
         botaoLimparFiltro.on("click", () => {
+            if (!this.#filtrada) {
+                return;
+            }
+
             for (const campoFiltro of this.#camposFiltro) {
                 campoFiltro.limpar();
             }
+
+            botaoFiltrar.find("i").removeClass(filtroAtivoIcone).addClass(filtroInativoIcone);
 
             this.exibirLinhas();
         });
@@ -167,6 +176,8 @@ class ListaObjetos extends Secao {
             if (this.#filtrada) {
                 this.exibirLinhas();
             }
+
+            botaoFiltrar.find("i").removeClass(filtroInativoIcone).addClass(filtroAtivoIcone);
 
             for (const indice of this.#camposLista.keys()) {
                 const campos = this.#camposLista.get(indice);

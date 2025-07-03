@@ -359,6 +359,32 @@ table > tbody > tr:last-child {
     }
 }
 
+/*
+@keyframes filtro-ativo {
+    0% {
+        background-color: white;
+    }
+
+    100% {
+        background-color: var(--bs-btn-bg);
+    }
+}
+
+.filtro-ativo {
+    animation-name: filtro-ativo;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(0.13, 1.09, 0.81, 0.99);
+    animation-direction: normal;
+}
+
+.filtro-inativo {
+    animation-name: filtro-ativo;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(0.13, 1.09, 0.81, 0.99);
+    animation-direction: reverse;
+}
+ */
+
 @keyframes carregado {
     0% {
         background-color: var(--cor-obrigatorio);
