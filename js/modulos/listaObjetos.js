@@ -155,6 +155,7 @@ class ListaObjetos extends Secao {
             });
         }
 
+        const filtroAtivoBotao = "filtro-ativo";
         const filtroAtivoIcone = "bi-funnel-fill";
         const filtroInativoIcone = "bi-funnel";
 
@@ -167,6 +168,8 @@ class ListaObjetos extends Secao {
                 campoFiltro.limpar();
             }
 
+            botaoFiltrar.removeClass(filtroAtivoBotao);
+            setTimeout(() => botaoFiltrar.addClass(filtroAtivoBotao), 0);
             botaoFiltrar.find("i").removeClass(filtroAtivoIcone).addClass(filtroInativoIcone);
 
             this.exibirLinhas();
@@ -177,6 +180,8 @@ class ListaObjetos extends Secao {
                 this.exibirLinhas();
             }
 
+            botaoFiltrar.removeClass(filtroAtivoBotao);
+            setTimeout(() => botaoFiltrar.addClass(filtroAtivoBotao), 0);
             botaoFiltrar.find("i").removeClass(filtroInativoIcone).addClass(filtroAtivoIcone);
 
             for (const indice of this.#camposLista.keys()) {
