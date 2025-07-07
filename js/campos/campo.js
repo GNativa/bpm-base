@@ -286,6 +286,13 @@ class Campo {
     }
 
     finalizarCarregamento(interromperAnimacao = false) {
+        if (!this.fonte) {
+            this.campo.removeClass("carregando");
+            this.campo.removeClass("carregado");
+            setTimeout(() => this.campo.addClass("carregado"), 0);
+            return;
+        }
+
         const camposFonte = $(`[${Constantes.campos.atributos.fonte}=${this.fonte.id}]`);
         const camposFonteVisiveis = camposFonte.filter(function () {
             return this.style.display !== "none"
@@ -303,7 +310,8 @@ class Campo {
         }
 
         this.campo.removeClass("carregando");
-        this.campo.addClass("carregado");
+        this.campo.removeClass("carregado");
+        setTimeout(() => this.campo.addClass("carregado"), 0);
 
         if (!interromperAnimacao) {
             camposFonteVisiveis.addClass("carregado");

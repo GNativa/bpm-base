@@ -389,7 +389,7 @@ table > tbody > tr:last-child {
 .carregado {
     animation-name: carregado;
     animation-duration: 1s;
-    animation-timing-function: ease-out;
+    animation-timing-function: cubic-bezier(0.13, 1.09, 0.81, 0.99);
     animation-direction: normal;
 }
 
@@ -406,7 +406,7 @@ table > tbody > tr:last-child {
 .carregado-falha {
     animation-name: carregado-falha;
     animation-duration: 1s;
-    animation-timing-function: ease-out;
+    animation-timing-function: cubic-bezier(0.13, 1.09, 0.81, 0.99);
     animation-direction: normal;
 }
 

@@ -180,6 +180,10 @@ class ListaObjetos extends Secao {
                 this.exibirLinhas();
             }
 
+            if (!this.#camposFiltro.some((campo) => campo.preenchido)) {
+                return;
+            }
+
             botaoFiltrar.removeClass(filtroAtivoBotao);
             setTimeout(() => botaoFiltrar.addClass(filtroAtivoBotao), 0);
             botaoFiltrar.find("i").removeClass(filtroInativoIcone).addClass(filtroAtivoIcone);
@@ -213,6 +217,7 @@ class ListaObjetos extends Secao {
                     }
 
                     linha.hide();
+                    campoFiltro.finalizarCarregamento();
                 }
             }
 
