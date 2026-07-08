@@ -6,10 +6,14 @@ class ListaObjetos extends Secao {
     #filtrada = false;
     #colunaBotoes = $(`<div class="col-4 d-flex justify-content-end"></div>`);
     #camposLista = new Map();
+    /** @type {Campo[]} */
     #camposFiltro = [];
     #linhas = new Map();
     #permiteAdicionarLinhas;
     #permiteRemoverLinhas;
+    #prefixoValorFiltro = 'valor-filtro-';
+    /** @type {jQuery | HTMLElement} */
+    #botaoFiltrar;
 
     constructor(id, titulo, colecao, validador, factories, filtros,
                 permiteAdicionarLinhas = true, permiteRemoverLinhas = true) {
@@ -33,6 +37,14 @@ class ListaObjetos extends Secao {
         }
 
         this.#filtrada = false;
+    }
+
+    #salvarFiltro(idCampo, valor) {
+        localStorage.setItem(`${this.#prefixoValorFiltro}${idCampo}`, valor ?? '');
+    }
+
+    #carregarFiltro(idCampo) {
+        return localStorage.getItem(`${this.#prefixoValorFiltro}${idCampo}`) ?? '';
     }
 
     #compararComFiltro(campo, campoFiltro) {
@@ -65,6 +77,15 @@ class ListaObjetos extends Secao {
         }
 
         return false;
+    }
+
+    filtrar() {
+        for (const campoFiltro of this.#camposFiltro) {
+            const valor = this.#carregarFiltro(campoFiltro.id);
+            campoFiltro.valor(valor);
+        }
+
+        this.#botaoFiltrar?.click();
     }
 
     #configurarFiltros() {
@@ -112,6 +133,8 @@ class ListaObjetos extends Secao {
                 <i class="bi bi-funnel fs-5"></i>
             </button>
         `);
+
+        this.#botaoFiltrar = botaoFiltrar;
 
         const botaoLimparFiltro = $(`
             <button id="botaoLimparFiltro${this.id}" type="button" title="Limpar filtros" class="btn btn-sm botao ms-3">
@@ -166,6 +189,7 @@ class ListaObjetos extends Secao {
 
             for (const campoFiltro of this.#camposFiltro) {
                 campoFiltro.limpar();
+                this.#salvarFiltro(campoFiltro.id, null);
             }
 
             botaoFiltrar.removeClass(filtroAtivoBotao);
@@ -180,7 +204,17 @@ class ListaObjetos extends Secao {
                 this.exibirLinhas();
             }
 
-            if (!this.#camposFiltro.some((campo) => campo.preenchido)) {
+            let aoMenosUmPreenchido = false;
+
+            for (const campoFiltro of this.#camposFiltro) {
+                this.#salvarFiltro(campoFiltro.id, campoFiltro.valor());
+
+                if (campoFiltro.preenchido) {
+                    aoMenosUmPreenchido = true;
+                }
+            }
+
+            if (!aoMenosUmPreenchido) {
                 return;
             }
 
